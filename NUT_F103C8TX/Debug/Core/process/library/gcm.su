@@ -1,0 +1,14 @@
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:64:6:mbedtls_gcm_init	16	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:78:12:gcm_gen_table	192	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:138:5:mbedtls_gcm_setkey	32	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:192:13:gcm_mult	128	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:248:5:mbedtls_gcm_starts	96	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:331:5:mbedtls_gcm_update_ad	80	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:386:13:gcm_incr	24	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:396:12:gcm_mask	48	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:424:5:mbedtls_gcm_update	144	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:512:5:mbedtls_gcm_finish	80	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:568:5:mbedtls_gcm_crypt_and_tag	40	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:606:5:mbedtls_gcm_auth_decrypt	88	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:649:6:mbedtls_gcm_free	16	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/gcm.c:887:5:mbedtls_gcm_self_test	584	static

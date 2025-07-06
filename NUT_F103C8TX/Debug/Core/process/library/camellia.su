@@ -1,0 +1,10 @@
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/camellia.c:274:13:camellia_feistel	32	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/camellia.c:299:6:mbedtls_camellia_init	16	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/camellia.c:305:6:mbedtls_camellia_free	16	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/camellia.c:316:5:mbedtls_camellia_setkey_enc	296	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/camellia.c:425:5:mbedtls_camellia_setkey_dec	320	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/camellia.c:476:5:mbedtls_camellia_crypt_ecb	48	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/camellia.c:544:5:mbedtls_camellia_crypt_cbc	56	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/camellia.c:604:5:mbedtls_camellia_crypt_cfb128	32	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/camellia.c:663:5:mbedtls_camellia_crypt_ctr	40	static
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/camellia.c:907:5:mbedtls_camellia_self_test	520	static
