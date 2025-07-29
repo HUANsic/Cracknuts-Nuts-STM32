@@ -1,0 +1,18 @@
+*/TriCore Debug (TASKING)/*
+language.settings.xml
+.metadata/*
+*.prefs
+*.o
+*.elf
+*.list
+*.map
+*.d
+*.su
+*.mk
+*.launch
+*/.ads/*
+*/CCL_Reports/*
+# */makefile # include this if it appears outside /TriCore Debug/
+# ignore all folders/files starting with test and temp
+test*
+temp*
