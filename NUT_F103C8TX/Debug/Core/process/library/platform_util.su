@@ -1,2 +1,0 @@
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/platform_util.c:67:6:mbedtls_platform_zeroize	16	static
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/library/platform_util.c:103:12:mbedtls_platform_gmtime_r	24	static

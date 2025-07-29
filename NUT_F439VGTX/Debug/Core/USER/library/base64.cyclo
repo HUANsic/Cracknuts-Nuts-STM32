@@ -1,0 +1,6 @@
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/base64.c:46:15:mbedtls_base64_mask_of_range	1
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/base64.c:62:15:mbedtls_base64_enc_char	1
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/base64.c:79:5:mbedtls_base64_encode	9
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/base64.c:158:13:mbedtls_base64_dec_value	1
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/base64.c:178:5:mbedtls_base64_decode	26
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/base64.c:299:5:mbedtls_base64_self_test	10

@@ -22,30 +22,29 @@ typedef enum {
 	NUT_ERROR_BUSY,
 	NUT_ERROR_PAYLOAD_SIZE,
 	NUT_ERROR_USER_CODE,
+	NUT_ERROR_SPI_ABORTED,
 	NUT_ERROR_CMD_UNKNOWN
 } NutError_e;
 
-typedef enum {
-	NUT_CMD_IGNORE = 0x0000,
-	NUT_CMD_ECHO = 0x0001,		// at the end of reception, copy the RX buffer to TX buffer
-} NutCommand_e;
+void Nut_Init(void);
 
-void vNut_Init(void);
+void Nut_loop(void);
 
-void vNut_loop(void);
+void Nut_Quiet(void);
 
-void vNut_Quiet(void);
+void Nut_unQuiet(void);
 
-void vNut_unQuiet(void);
+void Nut_LED(uint8_t on);
 
-void vNut_LED(uint8_t on);
+#define Nut_Trigger_Set() Nut_IO_1(1)
+#define Nut_Trigger_Clear() Nut_IO_1(0)
 
-void vNut_IO_1(uint8_t set);
+void Nut_IO_1(uint8_t set);
 
-void vNut_IO_2(uint8_t set);
+void Nut_IO_2(uint8_t set);
 
-void vNut_IO_3(uint8_t set);
+void Nut_IO_3(uint8_t set);
 
-void vNut_IO_USER(uint8_t set);
+void Nut_IO_USER(uint8_t set);
 
 #endif /* INC_NUT_COMMUNICATION_H_ */

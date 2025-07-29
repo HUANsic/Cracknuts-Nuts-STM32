@@ -1,0 +1,2 @@
+../library/platform_util.c:67:6:mbedtls_platform_zeroize	2
+../library/platform_util.c:103:12:mbedtls_platform_gmtime_r	3

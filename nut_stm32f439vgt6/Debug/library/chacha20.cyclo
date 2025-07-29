@@ -1,0 +1,10 @@
+../library/chacha20.c:79:20:chacha20_quarter_round	1
+../library/chacha20.c:114:13:chacha20_inner_block	1
+../library/chacha20.c:133:13:chacha20_block	3
+../library/chacha20.c:173:6:mbedtls_chacha20_init	1
+../library/chacha20.c:184:6:mbedtls_chacha20_free	2
+../library/chacha20.c:192:5:mbedtls_chacha20_setkey	1
+../library/chacha20.c:217:5:mbedtls_chacha20_starts	1
+../library/chacha20.c:240:5:mbedtls_chacha20_update	7
+../library/chacha20.c:305:5:mbedtls_chacha20_crypt	3
+../library/chacha20.c:523:5:mbedtls_chacha20_self_test	9

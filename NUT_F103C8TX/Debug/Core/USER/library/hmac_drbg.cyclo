@@ -1,0 +1,16 @@
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:52:6:mbedtls_hmac_drbg_init	1
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:62:5:mbedtls_hmac_drbg_update	13
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:110:5:mbedtls_hmac_drbg_seed_buf	4
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:144:12:hmac_drbg_reseed_core	10
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:223:5:mbedtls_hmac_drbg_reseed	1
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:235:5:mbedtls_hmac_drbg_seed	7
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:293:6:mbedtls_hmac_drbg_set_prediction_resistance	1
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:302:6:mbedtls_hmac_drbg_set_entropy_len	1
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:310:6:mbedtls_hmac_drbg_set_reseed_interval	1
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:319:5:mbedtls_hmac_drbg_random_with_add	15
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:390:5:mbedtls_hmac_drbg_random	1
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:414:6:mbedtls_hmac_drbg_free	2
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:430:5:mbedtls_hmac_drbg_write_seed_file	4
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:457:5:mbedtls_hmac_drbg_update_seed_file	7
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:541:12:hmac_drbg_self_test_entropy	1
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/hmac_drbg.c:560:5:mbedtls_hmac_drbg_self_test	24

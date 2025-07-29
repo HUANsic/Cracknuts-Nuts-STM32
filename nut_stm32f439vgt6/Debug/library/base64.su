@@ -1,0 +1,6 @@
+../library/base64.c:46:15:mbedtls_base64_mask_of_range	24	static
+../library/base64.c:62:15:mbedtls_base64_enc_char	24	static
+../library/base64.c:79:5:mbedtls_base64_encode	56	static
+../library/base64.c:158:13:mbedtls_base64_dec_value	24	static
+../library/base64.c:178:5:mbedtls_base64_decode	56	static
+../library/base64.c:299:5:mbedtls_base64_self_test	160	static

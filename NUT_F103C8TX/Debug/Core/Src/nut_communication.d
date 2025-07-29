@@ -27,7 +27,7 @@ Core/Src/nut_communication.o: ../Core/Src/nut_communication.c \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
  ../Core/Inc/nut_config.h \
- D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/user.h
+ D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/user.h
 ../Core/Inc/nut_communication.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -56,4 +56,4 @@ Core/Src/nut_communication.o: ../Core/Src/nut_communication.c \
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h:
 ../Core/Inc/nut_config.h:
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/process/user.h:
+D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/user.h:

@@ -37,7 +37,7 @@
 
 #define		NUT_SPI				hspi1
 #define		NUT_SPI_CS_PORT		GPIOA
-#define		NUT_SPI_CS_PIN		GPIO_PIN_3
+#define		NUT_SPI_CS_PIN		GPIO_PIN_4
 
 #define		NUT_UART			huart1
 

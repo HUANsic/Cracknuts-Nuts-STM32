@@ -1,0 +1,16 @@
+../library/aria.c:72:24:aria_p1	1
+../library/aria.c:123:24:aria_p3	1
+../library/aria.c:178:20:aria_a	1
+../library/aria.c:210:20:aria_sl	1
+../library/aria.c:343:13:aria_fo_xor	1
+../library/aria.c:365:13:aria_fe_xor	1
+../library/aria.c:391:13:aria_rot128	3
+../library/aria.c:417:5:mbedtls_aria_setkey_enc	9
+../library/aria.c:482:5:mbedtls_aria_setkey_dec	5
+../library/aria.c:517:5:mbedtls_aria_crypt_ecb	2
+../library/aria.c:572:6:mbedtls_aria_init	1
+../library/aria.c:579:6:mbedtls_aria_free	2
+../library/aria.c:591:5:mbedtls_aria_crypt_cbc	7
+../library/aria.c:652:5:mbedtls_aria_crypt_cfb128	7
+../library/aria.c:716:5:mbedtls_aria_crypt_ctr	6
+../library/aria.c:911:5:mbedtls_aria_self_test	41

@@ -31,9 +31,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>Core/process</name>
+			<name>Core/USER</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/process</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/USER</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
