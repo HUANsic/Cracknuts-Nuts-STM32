@@ -15,24 +15,11 @@ extern I2C_HandleTypeDef NUT_I2C;
 extern SPI_HandleTypeDef NUT_SPI;
 extern UART_HandleTypeDef NUT_UART;
 
-/* System command program declarations/prototypes */
-NutStatus_e Echo(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
-		uint32_t result_buffer_MAX_size);
-
-/* User command */
+/* Command */
 extern uint16_t cmd_list[];
-/* User command program, returns result length */
+/* Command program, returns result status */
 extern NutStatus_e (*cmd_prog_list[])(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
 		uint32_t result_buffer_MAX_size);
-
-/* System command */
-uint16_t sys_cmd[] = { NUT_CMD_IGNORE, NUT_CMD_ECHO };
-/* System command program */
-NutStatus_e (*sys_cmd_prog[])(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
-		uint32_t result_buffer_MAX_size) = {
-			0,
-			Echo
-};
 
 /* Command program to be executed */
 NutStatus_e (*cmd_program)(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
@@ -46,13 +33,14 @@ NutError_e error;
 uint8_t tx_header[NUT_BUFFER_SIZE + 6], rx_header[NUT_BUFFER_SIZE + 8];
 uint8_t *tx_buffer = tx_header + 6;
 uint8_t *rx_buffer = rx_header + 8;
-uint16_t comm_max_batch_size;
 
 /*  CONSTANTS  */
 uint8_t error_header[] = { NUT_ERROR, NUT_ERROR_UNKNOWN, 0, 0, 0, 0 };	// payload size too large
 uint8_t response_header[] = { NUT_OK, ~NUT_OK, 0, 0, 0, 0 };
 
-/* Other function prototypes */
+/* DEBUG */
+uint8_t success_cmd_count = 0;
+uint8_t received_any_count = 0;
 
 /* Stop CLK of peripheral */
 void _NutComm_UART_Disable(void);
@@ -82,12 +70,7 @@ uint32_t _NutComm_DecodeHeader() {
 	length |= rx_header[7];
 	/* Parse command */
 	cmd_program = 0;
-	for (i = 0; i < sizeof(sys_cmd) / 2; i++) {
-		if (cmd_program)
-			break;
-		if (sys_cmd[i] == command)
-			cmd_program = sys_cmd_prog[i];	// set the program
-	}
+
 	for (i = 0; i < 255; i++) {		// just scan all TODO need to fix this
 		if (cmd_program)
 			break;
@@ -122,6 +105,31 @@ void _NutComm_CAN_Init() {
 
 }
 void _NutComm_Pins_Init() {
+
+}
+
+/* Last things to do before next communucation */
+void _NutComm_UART_Quit() {
+	/* Empty buffer */
+	// uint8_t tmp = NUT_UART.Instance->DR;
+	// (void)tmp;
+	/* Enable other interfaces */
+	_NutComm_SPI_Enable();
+	_NutComm_I2C_Enable();
+	_NutComm_CAN_Enable();
+}
+void _NutComm_SPI_Quit() {
+	/* Wait until CSn releases */
+	while (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_RESET)
+		;
+	/* Set Internal SS */
+	NUT_SPI.Instance->CR1 |= SPI_CR1_SSI;
+	/* Enable other interfaces */
+	_NutComm_UART_Enable();
+	_NutComm_I2C_Enable();
+	_NutComm_CAN_Enable();
+}
+void _NutComm_I2C_Quit() {
 
 }
 
@@ -164,29 +172,16 @@ void _NutComm_CAN_Error() {
 	// no need to check for wake up
 }
 
-/* System command program definitions */
-NutStatus_e Echo(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
-		uint32_t result_buffer_MAX_size) {
-	uint32_t i;
-	*result_length = received_data_length;
-	for (i = 0; i < received_data_length; i++)
-		result_buffer_ptr[i] = received_data_ptr[i];
-	return NUT_OK;
-}
-
 /* Initializes communication interfaces */
 void _NutComm_Init() {
-	/* Constrain the size of each burst */
-	comm_max_batch_size = (65535 > NUT_BUFFER_SIZE) ? NUT_BUFFER_SIZE : 65535;
+
 }
 
 /* Continuously check for signs of communication */
 void Nut_loop() {
 	HAL_StatusTypeDef retstatus = HAL_OK;
 	uint32_t length;
-	uint8_t *tempptr;
 	uint32_t response_length = 0;
-	uint32_t data_length;
 	uint32_t i;
 
 	/* Check UART */
@@ -198,95 +193,92 @@ void Nut_loop() {
 		_NutComm_I2C_Disable();
 		_NutComm_CAN_Disable();
 		/* Finish receiving the header */
-		retstatus = HAL_UART_Receive(&NUT_UART, rx_header + 1, 7, 100);
-		if (retstatus == HAL_TIMEOUT) {
-			status = NUT_WARNING;
-			error = NUT_ERROR_TIMEOUT;
-			/* Enable other interfaces */
-			_NutComm_SPI_Enable();
-			_NutComm_I2C_Enable();
-			_NutComm_CAN_Enable();
-			return;
+		for (i = 1; i < 8;) {
+			retstatus = HAL_UART_Receive(&NUT_UART, rx_header + i, 1, 100);
+			if (retstatus == HAL_OK) {
+				i++;
+			}
+			/* in case of timeout and error, must exit because UART is special and must not get stuck */
+			else if (retstatus == HAL_TIMEOUT) {
+				status = NUT_WARNING;
+				error = NUT_ERROR_TIMEOUT;
+				_NutComm_UART_Quit();
+				return;
+			} else if (retstatus != HAL_OK) {
+				status = NUT_ERROR;
+				error = NUT_ERROR_UNKNOWN;
+				_NutComm_UART_Quit();
+				return;
+			}
 		}
-		if (retstatus == HAL_BUSY) {
-			status = NUT_WARNING;
-			error = NUT_ERROR_BUSY;
-			/* Enable other interfaces */
-			_NutComm_SPI_Enable();
-			_NutComm_I2C_Enable();
-			_NutComm_CAN_Enable();
-			return;
-		}
-		if (retstatus != HAL_OK) {
-			status = NUT_WARNING;
-			error = NUT_ERROR_UNKNOWN;
-			/* Enable other interfaces */
-			_NutComm_SPI_Enable();
-			_NutComm_I2C_Enable();
-			_NutComm_CAN_Enable();
-			return;
-		}
+
 		/* Decode header */
+		status = NUT_OK;
 		length = _NutComm_DecodeHeader();
 		/* If ERROR occurred, prepare to send error package */
 		if (status == NUT_ERROR) {
 			/* Wait until the other side to finish transmission */
-			while (length) {
-				if (length < comm_max_batch_size) {
-					HAL_UART_Receive(&NUT_UART, rx_header, length, 1000);
-					length = 0;
-				} else {
-					if (HAL_UART_Receive(&NUT_UART, rx_header, comm_max_batch_size, 1000) == HAL_TIMEOUT)
-						break;	// also break on timeout
-					length -= comm_max_batch_size;
+			for (i = 0; i < length;) {
+				retstatus = HAL_UART_Receive(&NUT_UART, rx_buffer, 1, 100);
+				if (retstatus == HAL_OK) {
+					i++;
+				}
+				/* in case of timeout and error, must exit because UART is special and must not get stuck */
+				else if (retstatus == HAL_TIMEOUT) {
+					status = NUT_WARNING;
+					error = NUT_ERROR_TIMEOUT;
+					_NutComm_UART_Quit();
+					return;
+				} else if (retstatus != HAL_OK) {
+					status = NUT_ERROR;
+					error = NUT_ERROR_UNKNOWN;
+					_NutComm_UART_Quit();
+					return;
 				}
 			}
 			/* Send error package */
-			error_header[1] = NUT_ERROR_PAYLOAD_SIZE;
-			HAL_UART_Transmit(&NUT_UART, error_header, 6, 100);
-			/* And just return */
-			/* Enable other interfaces */
-			_NutComm_SPI_Enable();
-			_NutComm_I2C_Enable();
-			_NutComm_CAN_Enable();
+			tx_header[0] = NUT_ERROR;
+			tx_header[1] = NUT_ERROR_PAYLOAD_SIZE;
+			tx_header[2] = 0;
+			tx_header[3] = 0;
+			tx_header[4] = 0;
+			tx_header[5] = 0;
+			HAL_UART_Transmit(&NUT_UART, tx_header, 6, 100);	// no need to check whether it is successful
+			_NutComm_UART_Quit();
 			return;
 		}
 		/* Receive the payload */
-		data_length = length;
-		tempptr = rx_buffer;
-		while (length) {
-			if (length < comm_max_batch_size) {
-				HAL_UART_Receive(&NUT_UART, tempptr, length, 1000);
-				length = 0;
-			} else {
-				if (HAL_UART_Receive(&NUT_UART, tempptr, comm_max_batch_size, 1000) == HAL_TIMEOUT) {
-					status = NUT_ERROR;
-					error = NUT_ERROR_TIMEOUT;
-					/* Send error package on timeout */
-					error_header[1] = NUT_ERROR_TIMEOUT;
-					HAL_UART_Transmit(&NUT_UART, error_header, 6, 100);
-					/* And just return */
-					/* Enable other interfaces */
-					_NutComm_SPI_Enable();
-					_NutComm_I2C_Enable();
-					_NutComm_CAN_Enable();
-					return;
-				}
-				tempptr += comm_max_batch_size;
-				length -= comm_max_batch_size;
+		for (i = 0; i < length;) {
+			retstatus = HAL_UART_Receive(&NUT_UART, rx_buffer + i, 1, 100);
+			if (retstatus == HAL_OK) {
+				i++;
+			}
+			/* in case of timeout and error, must exit because UART is special and must not get stuck */
+			else if (retstatus == HAL_TIMEOUT) {
+				status = NUT_WARNING;
+				error = NUT_ERROR_TIMEOUT;
+				_NutComm_UART_Quit();
+				return;
+			} else if (retstatus != HAL_OK) {
+				status = NUT_ERROR;
+				error = NUT_ERROR_UNKNOWN;
+				_NutComm_UART_Quit();
+				return;
 			}
 		}
 		/* Process the command and give feedback */
 		if (cmd_program) {
-			status = cmd_program(rx_buffer, data_length, tx_buffer, &response_length, NUT_BUFFER_SIZE);
+			status = cmd_program(rx_buffer, length, tx_buffer, &response_length, NUT_BUFFER_SIZE);
 			/* Send response package according to response length */
 			if (response_length > NUT_BUFFER_SIZE) {
-				error_header[1] = NUT_ERROR_PAYLOAD_SIZE;
-				HAL_UART_Transmit(&NUT_UART, error_header, 6, 100);
-				/* Enable other interfaces */
-				_NutComm_SPI_Enable();
-				_NutComm_I2C_Enable();
-				_NutComm_CAN_Enable();
+				tx_header[0] = NUT_ERROR;
+				tx_header[1] = NUT_ERROR_PAYLOAD_SIZE;
+				tx_header[2] = 0;
+				tx_header[3] = 0;
+				tx_header[4] = 0;
+				tx_header[5] = 0;
+				HAL_UART_Transmit(&NUT_UART, tx_header, 6, 100);	// no need to check whether it is successful
+				_NutComm_UART_Quit();
 				return;
 			} else {
 				/* Prepare header */
@@ -304,38 +296,44 @@ void Nut_loop() {
 				/* Send the header */
 				HAL_UART_Transmit(&NUT_UART, tx_header, 6, 100);
 				/* Then send the payload */
-				tempptr = tx_buffer;
-				while (response_length) {
-					if (response_length < comm_max_batch_size) {
-						HAL_UART_Transmit(&NUT_UART, tempptr, response_length, 1000);
-						response_length = 0;
-					} else {
-						HAL_UART_Transmit(&NUT_UART, tempptr, comm_max_batch_size, 1000);
-						tempptr += comm_max_batch_size;
-						response_length -= comm_max_batch_size;
+				for (i = 0; i < response_length;) {
+					retstatus = HAL_UART_Transmit(&NUT_UART, tx_buffer + i, 1, 100);
+					if (retstatus == HAL_OK) {
+						i++;
+					}
+					/* in case of timeout and error, must exit because UART is special and must not get stuck */
+					else if (retstatus == HAL_TIMEOUT) {
+						status = NUT_WARNING;
+						error = NUT_ERROR_TIMEOUT;
+						_NutComm_UART_Quit();
+						return;
+					} else if (retstatus != HAL_OK) {
+						status = NUT_ERROR;
+						error = NUT_ERROR_UNKNOWN;
+						_NutComm_UART_Quit();
+						return;
 					}
 				}
-				/* Enable other interfaces */
-				_NutComm_SPI_Enable();
-				_NutComm_I2C_Enable();
-				_NutComm_CAN_Enable();
+				_NutComm_UART_Quit();
 				return;
 			}
 		}
 		/* Command not found, return error */
 		else {
-			error_header[1] = NUT_ERROR_CMD_UNKNOWN;
-			HAL_UART_Transmit(&NUT_UART, error_header, 6, 100);
-			/* Enable other interfaces */
-			_NutComm_SPI_Enable();
-			_NutComm_I2C_Enable();
-			_NutComm_CAN_Enable();
+			tx_header[0] = NUT_ERROR;
+			tx_header[1] = NUT_ERROR_CMD_UNKNOWN;
+			tx_header[2] = 0;
+			tx_header[3] = 0;
+			tx_header[4] = 0;
+			tx_header[5] = 0;
+			HAL_UART_Transmit(&NUT_UART, tx_header, 6, 100);	// no need to check whether it is successful
+			_NutComm_UART_Quit();
 			return;
 		}
 	}
 
 	/* Check SPI */
-//	else if (0) {
+	//	else if (0) {
 	else if (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_RESET) {
 		/* Clear Internal SS */
 		NUT_SPI.Instance->CR1 &= ~SPI_CR1_SSI;
@@ -345,7 +343,7 @@ void Nut_loop() {
 		_NutComm_CAN_Disable();
 		/* Poll for header */
 		for (i = 0; i < 8;) {
-			retstatus = HAL_SPI_Receive(&NUT_SPI, rx_header + i, 1, 10);
+			retstatus = HAL_SPI_Receive(&NUT_SPI, rx_header + i, 1, 100);
 			if (retstatus == HAL_OK) {
 				i++;
 			}
@@ -353,7 +351,8 @@ void Nut_loop() {
 			else if (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_SET) {
 				status = NUT_WARNING;
 				error = NUT_ERROR_SPI_ABORTED;
-				goto Fuck_SPI;
+				_NutComm_SPI_Quit();
+				return;
 			}
 		}
 		/* Decode header */
@@ -362,7 +361,7 @@ void Nut_loop() {
 		if (status == NUT_ERROR) {
 			/* Wait until the other side to finish transmission */
 			for (i = 0; i < length;) {
-				retstatus = HAL_SPI_Receive(&NUT_SPI, rx_buffer, 1, 10);
+				retstatus = HAL_SPI_Receive(&NUT_SPI, rx_buffer, 1, 100);
 				if (retstatus == HAL_OK) {
 					i++;
 				}
@@ -370,13 +369,19 @@ void Nut_loop() {
 				else if (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_SET) {
 					status = NUT_WARNING;
 					error = NUT_ERROR_SPI_ABORTED;
-					goto Fuck_SPI;
+					_NutComm_SPI_Quit();
+					return;
 				}
 			}
 			/* Send error package */
-			error_header[1] = NUT_ERROR_PAYLOAD_SIZE;
+			tx_header[0] = NUT_ERROR;
+			tx_header[1] = NUT_ERROR_PAYLOAD_SIZE;
+			tx_header[2] = 0;
+			tx_header[3] = 0;
+			tx_header[4] = 0;
+			tx_header[5] = 0;
 			for (i = 0; i < 6;) {
-				retstatus = HAL_SPI_Transmit(&NUT_SPI, error_header + i, 1, 10);
+				retstatus = HAL_SPI_Transmit(&NUT_SPI, tx_header + i, 1, 100);
 				if (retstatus == HAL_OK) {
 					i++;
 				}
@@ -384,36 +389,36 @@ void Nut_loop() {
 				else if (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_SET) {
 					status = NUT_WARNING;
 					error = NUT_ERROR_SPI_ABORTED;
-					goto Fuck_SPI;
+					_NutComm_SPI_Quit();
+					return;
 				}
 			}
 			/* And just return */
-			goto Fuck_SPI;
+			_NutComm_SPI_Quit();
+			return;
 		}
 		/* Receive the payload */
-		data_length = length;
-		tempptr = rx_buffer;
-		for (i = 0; length;) {
-			retstatus = HAL_SPI_Receive(&NUT_SPI, rx_buffer + i, 1, 10);
+		for (i = 0; i < length;) {
+			retstatus = HAL_SPI_Receive(&NUT_SPI, rx_buffer + i, 1, 100);
 			if (retstatus == HAL_OK) {
-				length--;
 				i++;
 			}
 			/* if CS is released midway (in case of timeout), block if CS is held low */
 			else if (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_SET) {
 				status = NUT_WARNING;
 				error = NUT_ERROR_SPI_ABORTED;
-				goto Fuck_SPI;
+				_NutComm_SPI_Quit();
+				return;
 			}
 		}
 		/* Process the command and give feedback */
 		if (cmd_program) {
-			status = cmd_program(rx_buffer, data_length, tx_buffer, &response_length, NUT_BUFFER_SIZE);
+			status = cmd_program(rx_buffer, length, tx_buffer, &response_length, NUT_BUFFER_SIZE);
 			/* Send response package according to response length */
 			if (response_length > NUT_BUFFER_SIZE) {
 				error_header[1] = NUT_ERROR_PAYLOAD_SIZE;
 				for (i = 0; i < 6;) {
-					retstatus = HAL_SPI_Transmit(&NUT_SPI, error_header + i, 1, 10);
+					retstatus = HAL_SPI_Transmit(&NUT_SPI, error_header + i, 1, 100);
 					if (retstatus == HAL_OK) {
 						i++;
 					}
@@ -421,10 +426,12 @@ void Nut_loop() {
 					else if (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_SET) {
 						status = NUT_WARNING;
 						error = NUT_ERROR_SPI_ABORTED;
-						goto Fuck_SPI;
+						_NutComm_SPI_Quit();
+						return;
 					}
 				}
-				goto Fuck_SPI;
+				_NutComm_SPI_Quit();
+				return;
 			} else {
 				/* Prepare header */
 				if (status == NUT_OK) {
@@ -440,7 +447,7 @@ void Nut_loop() {
 				tx_header[5] = 0x0FF & (response_length);
 				/* Send the header */
 				for (i = 0; i < 6;) {
-					retstatus = HAL_SPI_Transmit(&NUT_SPI, tx_header + i, 1, 10);
+					retstatus = HAL_SPI_Transmit(&NUT_SPI, tx_header + i, 1, 100);
 					if (retstatus == HAL_OK) {
 						i++;
 					}
@@ -448,12 +455,13 @@ void Nut_loop() {
 					else if (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_SET) {
 						status = NUT_WARNING;
 						error = NUT_ERROR_SPI_ABORTED;
-						goto Fuck_SPI;
+						_NutComm_SPI_Quit();
+						return;
 					}
 				}
 				/* Then send the payload */
 				for (i = 0; i < response_length;) {
-					retstatus = HAL_SPI_Transmit(&NUT_SPI, tx_buffer + i, 1, 10);
+					retstatus = HAL_SPI_Transmit(&NUT_SPI, tx_buffer + i, 1, 100);
 					if (retstatus == HAL_OK) {
 						i++;
 					}
@@ -461,17 +469,19 @@ void Nut_loop() {
 					else if (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_SET) {
 						status = NUT_WARNING;
 						error = NUT_ERROR_SPI_ABORTED;
-						goto Fuck_SPI;
+						_NutComm_SPI_Quit();
+						return;
 					}
 				}
-				goto Fuck_SPI;
+				_NutComm_SPI_Quit();
+				return;
 			}
 		}
 		/* Command not found, return error */
 		else {
 			error_header[1] = NUT_ERROR_CMD_UNKNOWN;
 			for (i = 0; i < 6;) {
-				retstatus = HAL_SPI_Transmit(&NUT_SPI, error_header + i, 1, 10);
+				retstatus = HAL_SPI_Transmit(&NUT_SPI, error_header + i, 1, 100);
 				if (retstatus == HAL_OK) {
 					i++;
 				}
@@ -479,19 +489,11 @@ void Nut_loop() {
 				else if (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_SET) {
 					status = NUT_WARNING;
 					error = NUT_ERROR_SPI_ABORTED;
-					goto Fuck_SPI;
+					_NutComm_SPI_Quit();
+					return;
 				}
 			}
-			Fuck_SPI:
-			/* Wait until CSn releases */
-			while (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_RESET)
-				;
-			/* Set Internal SS */
-			NUT_SPI.Instance->CR1 |= SPI_CR1_SSI;
-			/* Enable other interfaces */
-			_NutComm_UART_Enable();
-			_NutComm_I2C_Enable();
-			_NutComm_CAN_Enable();
+			_NutComm_SPI_Quit();
 			return;
 		}
 	}
@@ -512,19 +514,11 @@ void Nut_Init() {
 }
 
 void Nut_Quiet() {
-	_NutComm_UART_Disable();
-	_NutComm_SPI_Disable();
-	_NutComm_I2C_Disable();
-	_NutComm_CAN_Disable();
 	SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;	// disable SysTick
 }
 
 void Nut_unQuiet() {
 	SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;	// enable SysTick
-	_NutComm_UART_Enable();
-	_NutComm_SPI_Enable();
-	_NutComm_I2C_Enable();
-	_NutComm_CAN_Enable();
 }
 
 /* Pin Manipulation */

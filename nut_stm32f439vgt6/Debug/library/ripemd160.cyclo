@@ -1,9 +1,0 @@
-../library/ripemd160.c:47:6:mbedtls_ripemd160_init	1
-../library/ripemd160.c:52:6:mbedtls_ripemd160_free	2
-../library/ripemd160.c:60:6:mbedtls_ripemd160_clone	1
-../library/ripemd160.c:69:5:mbedtls_ripemd160_starts	1
-../library/ripemd160.c:87:5:mbedtls_internal_ripemd160_process	1
-../library/ripemd160.c:285:5:mbedtls_ripemd160_update	9
-../library/ripemd160.c:345:5:mbedtls_ripemd160_finish	4
-../library/ripemd160.c:385:5:mbedtls_ripemd160	3
-../library/ripemd160.c:455:5:mbedtls_ripemd160_self_test	8

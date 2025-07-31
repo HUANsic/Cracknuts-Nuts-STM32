@@ -13,6 +13,7 @@ language.settings.xml
 */.ads/*
 */CCL_Reports/*
 # */makefile # include this if it appears outside /TriCore Debug/
+*/Debug/*
 # ignore all folders/files starting with test and temp
 test*
 temp*

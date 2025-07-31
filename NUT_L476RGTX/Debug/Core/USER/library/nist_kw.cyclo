@@ -1,8 +1,0 @@
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/nist_kw.c:64:6:mbedtls_nist_kw_init	1
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/nist_kw.c:69:5:mbedtls_nist_kw_setkey	6
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/nist_kw.c:118:6:mbedtls_nist_kw_free	1
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/nist_kw.c:128:13:calc_a_xor_t	2
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/nist_kw.c:141:5:mbedtls_nist_kw_wrap	16
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/nist_kw.c:283:12:unwrap	6
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/nist_kw.c:345:5:mbedtls_nist_kw_unwrap	20
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/library/nist_kw.c:585:5:mbedtls_nist_kw_self_test	32

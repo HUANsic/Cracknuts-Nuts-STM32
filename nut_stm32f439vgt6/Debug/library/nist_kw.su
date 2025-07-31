@@ -1,8 +1,0 @@
-../library/nist_kw.c:64:6:mbedtls_nist_kw_init	16	static
-../library/nist_kw.c:69:5:mbedtls_nist_kw_setkey	32	static
-../library/nist_kw.c:118:6:mbedtls_nist_kw_free	16	static
-../library/nist_kw.c:128:13:calc_a_xor_t	40	static
-../library/nist_kw.c:141:5:mbedtls_nist_kw_wrap	120	static
-../library/nist_kw.c:283:12:unwrap	112	static
-../library/nist_kw.c:345:5:mbedtls_nist_kw_unwrap	80	static
-../library/nist_kw.c:585:5:mbedtls_nist_kw_self_test	160	static

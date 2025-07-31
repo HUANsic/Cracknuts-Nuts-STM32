@@ -1,2 +1,0 @@
-../library/platform.c:370:5:mbedtls_platform_setup	16	static
-../library/platform.c:380:6:mbedtls_platform_teardown	16	static

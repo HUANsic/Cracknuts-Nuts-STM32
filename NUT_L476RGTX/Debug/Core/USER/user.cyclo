@@ -1,8 +1,0 @@
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/user.c:9:6:User_Init	1
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/user.c:14:13:AES_SetEncryptionKey	2
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/user.c:22:13:AES_SetDecryptionKey	2
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/user.c:30:13:AES_Encrypt	2
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/user.c:46:13:AES_Decrypt	2
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/user.c:62:13:DES_SetEncryptionKey	2
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/user.c:70:13:DES_SetDecryptionKey	2
-D:/Tsinghua/Cracknuts/Nuts/STM32Code/nuts/USER/user.c:78:13:DES_Encrypt	2

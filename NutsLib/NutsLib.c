@@ -5,7 +5,7 @@
  *      Author: abcde
  */
 
-#include "nut_communication.h"
+#include "NutsLib.h"
 #include "nut_config.h"
 #include "user.h"
 
