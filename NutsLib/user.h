@@ -1,3 +1,3 @@
-#include "nut_communication.h"
+#include "NutsLib.h"
 
 void User_Init(void);

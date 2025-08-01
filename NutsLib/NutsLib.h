@@ -8,7 +8,7 @@
 #ifndef INC_NUT_COMMUNICATION_H_
 #define INC_NUT_COMMUNICATION_H_
 
-#include "stm32f1xx_hal.h"
+#include "NutsLib_Config.h"
 
 typedef enum {
 	NUT_OK = 0,

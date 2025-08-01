@@ -6,7 +6,6 @@
  */
 
 #include "NutsLib.h"
-#include "nut_config.h"
 #include "user.h"
 
 /* Communication Interfaces */
