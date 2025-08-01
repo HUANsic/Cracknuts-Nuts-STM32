@@ -66,7 +66,7 @@ NutStatus_e AES_Encrypt(uint8_t *received_data_ptr, uint32_t received_data_lengt
 	Nut_IO_1(0);
 	Nut_IO_USER(0);
 	Nut_LED(0);
-	Nut_unQuiet();
+	Nut_Unquiet();
 	return NUT_OK;
 }
 
@@ -82,7 +82,7 @@ NutStatus_e AES_Decrypt(uint8_t *received_data_ptr, uint32_t received_data_lengt
 	Nut_IO_1(0);
 	Nut_IO_USER(0);
 	Nut_LED(0);
-	Nut_unQuiet();
+	Nut_Unquiet();
 	return NUT_OK;
 }
 
@@ -159,7 +159,7 @@ NutStatus_e SPA_UpdateData(uint8_t *received_data_ptr, uint32_t received_data_le
 	Nut_IO_1(0);
 	Nut_IO_USER(0);
 	Nut_LED(0);
-	Nut_unQuiet();
+	Nut_Unquiet();
 
 	// return run result: NUT_OK, NUT_WARNING, NUT_ERROR
 	return NUT_OK;

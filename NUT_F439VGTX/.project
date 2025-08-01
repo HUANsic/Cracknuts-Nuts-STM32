@@ -31,9 +31,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>Core/USER</name>
+			<name>Core/NutsLib</name>
 			<type>2</type>
-			<locationURI>PARENT-1-PROJECT_LOC/USER</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/NutsLib</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

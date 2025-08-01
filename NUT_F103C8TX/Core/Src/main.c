@@ -21,7 +21,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "nut_communication.h"
+#include "NutsLib.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -106,22 +106,12 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 	Nut_Init();
-	/*
-	vNut_LED(1);
-	HAL_Delay(200);
-	vNut_LED(0);
-	HAL_Delay(200);
-	vNut_LED(1);
-	HAL_Delay(200);
-	vNut_LED(0);
-	HAL_Delay(200);
-	*/
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while (1) {
-		Nut_loop();
+		Nut_Loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

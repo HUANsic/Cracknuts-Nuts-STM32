@@ -5,8 +5,8 @@
  *      Author: abcde
  */
 
-#ifndef INC_NUT_CONFIG_H_
-#define INC_NUT_CONFIG_H_
+#ifndef INC_NUTSLIB_CONFIG_H_
+#define INC_NUTSLIB_CONFIG_H_
 
 #include "stm32l4xx_hal.h"
 
@@ -43,4 +43,4 @@
 
 #define		NUT_CAN				hcan1
 
-#endif /* INC_NUT_CONFIG_H_ */
+#endif /* INC_NUTSLIB_CONFIG_H_ */

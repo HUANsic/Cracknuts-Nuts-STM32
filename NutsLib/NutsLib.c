@@ -143,14 +143,20 @@ void _NutComm_SPI_Error() {
 	__HAL_SPI_CLEAR_CRCERRFLAG(&NUT_SPI);
 }
 void _NutComm_I2C_Error() {
-	uint16_t dmy;
 	/* Wait until bus idle */
+#ifdef STM32L4xx_HAL_H
+	while (NUT_I2C.Instance->ISR & (uint32_t) I2C_FLAG_BUSY)
+		;
+	__HAL_I2C_CLEAR_FLAG(&NUT_I2C, 0xFF);	// clear SR1 flags
+#else
+	uint16_t dmy;
 	while (NUT_I2C.Instance->SR2 & (uint32_t) I2C_FLAG_BUSY)
 		;
 	/* Clear all flags */
 	__HAL_I2C_CLEAR_FLAG(&NUT_I2C, 0xFF);	// clear SR1 flags
 	dmy = NUT_I2C.Instance->SR2;	// clear SR2 flags immediately to clear
 	(void) dmy;
+#endif
 }
 void _NutComm_CAN_Error() {
 	/* Wait until controller is in SLEEP mode, meaning current TX or RX activity is done */
@@ -180,16 +186,22 @@ void _NutComm_Init() {
 }
 
 /* Continuously check for signs of communication */
-void Nut_loop() {
+void Nut_Loop() {
 	HAL_StatusTypeDef retstatus = HAL_OK;
 	uint32_t length;
 	uint32_t response_length = 0;
 	uint32_t i;
 
 	/* Check UART */
+#ifdef STM32L4xx_HAL_H
+	if (NUT_UART.Instance->ISR & UART_FLAG_RXNE) {
+		/* Record the first byte of header */
+		rx_header[0] = (uint8_t) NUT_UART.Instance->RDR;
+#else
 	if (NUT_UART.Instance->SR & UART_FLAG_RXNE) {
 		/* Record the first byte of header */
 		rx_header[0] = (uint8_t) NUT_UART.Instance->DR;
+#endif
 		/* Disable other interfaces */
 		_NutComm_SPI_Disable();
 		_NutComm_I2C_Disable();
@@ -518,7 +530,7 @@ void Nut_Quiet() {
 	SysTick->CTRL &= ~SysTick_CTRL_TICKINT_Msk;	// disable SysTick
 }
 
-void Nut_unQuiet() {
+void Nut_Unquiet() {
 	SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;	// enable SysTick
 }
 

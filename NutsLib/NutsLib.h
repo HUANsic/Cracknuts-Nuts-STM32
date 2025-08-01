@@ -5,8 +5,8 @@
  *      Author: abcde
  */
 
-#ifndef INC_NUT_COMMUNICATION_H_
-#define INC_NUT_COMMUNICATION_H_
+#ifndef INC_NUTSLIB_H_
+#define INC_NUTSLIB_H_
 
 #include "NutsLib_Config.h"
 
@@ -28,11 +28,11 @@ typedef enum {
 
 void Nut_Init(void);
 
-void Nut_loop(void);
+void Nut_Loop(void);
 
 void Nut_Quiet(void);
 
-void Nut_unQuiet(void);
+void Nut_Unquiet(void);
 
 void Nut_LED(uint8_t on);
 
@@ -47,4 +47,4 @@ void Nut_IO_3(uint8_t set);
 
 void Nut_IO_USER(uint8_t set);
 
-#endif /* INC_NUT_COMMUNICATION_H_ */
+#endif /* INC_NUTSLIB_H_ */
