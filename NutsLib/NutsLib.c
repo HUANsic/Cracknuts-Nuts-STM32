@@ -41,16 +41,6 @@ uint8_t response_header[] = { NUT_OK, ~NUT_OK, 0, 0, 0, 0 };
 uint8_t success_cmd_count = 0;
 uint8_t received_any_count = 0;
 
-/* Stop CLK of peripheral without needing to re-initialize */
-void _NutComm_UART_Disable(void);
-void _NutComm_SPI_Disable(void);
-void _NutComm_I2C_Disable(void);
-void _NutComm_CAN_Disable(void);
-void _NutComm_UART_Enable(void);
-void _NutComm_SPI_Enable(void);
-void _NutComm_I2C_Enable(void);
-void _NutComm_CAN_Enable(void);
-
 /* Decode header */
 uint32_t _NutComm_DecodeHeader() {
 	uint32_t length;
@@ -109,13 +99,9 @@ void _NutComm_Pins_Init() {
 
 /* Last things to do before next communucation */
 void _NutComm_UART_Quit() {
-	/* Empty buffer */
-	// uint8_t tmp = NUT_UART.Instance->DR;
-	// (void)tmp;
-	/* Enable other interfaces */
-	_NutComm_SPI_Enable();
-	_NutComm_I2C_Enable();
-	_NutComm_CAN_Enable();
+//	HAL_UART_Abort(&NUT_UART);
+//	NUT_UART.RxState = HAL_UART_STATE_READY;
+//	NUT_UART.gState = HAL_UART_STATE_READY;
 }
 void _NutComm_SPI_Quit() {
 	/* Wait until CSn releases */
@@ -123,10 +109,6 @@ void _NutComm_SPI_Quit() {
 		;
 	/* Set Internal SS */
 	NUT_SPI.Instance->CR1 |= SPI_CR1_SSI;
-	/* Enable other interfaces */
-	_NutComm_UART_Enable();
-	_NutComm_I2C_Enable();
-	_NutComm_CAN_Enable();
 }
 void _NutComm_I2C_Quit() {
 
@@ -137,10 +119,6 @@ void _NutComm_SPI_Error() {
 	/* Wait until chip not selected */
 	while (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_RESET)
 		;
-	/* Clear all flags */
-	__HAL_SPI_CLEAR_OVRFLAG(&NUT_SPI);
-	__HAL_SPI_CLEAR_MODFFLAG(&NUT_SPI);
-	__HAL_SPI_CLEAR_CRCERRFLAG(&NUT_SPI);
 }
 void _NutComm_I2C_Error() {
 	/* Wait until bus idle */
@@ -202,10 +180,6 @@ void Nut_Loop() {
 		/* Record the first byte of header */
 		rx_header[0] = (uint8_t) NUT_UART.Instance->DR;
 #endif
-		/* Disable other interfaces */
-		_NutComm_SPI_Disable();
-		_NutComm_I2C_Disable();
-		_NutComm_CAN_Disable();
 		/* Finish receiving the header */
 		for (i = 1; i < 8;) {
 			retstatus = HAL_UART_Receive(&NUT_UART, rx_header + i, 1, 100);
@@ -351,10 +325,6 @@ void Nut_Loop() {
 	else if (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_RESET) {
 		/* Clear Internal SS */
 		NUT_SPI.Instance->CR1 &= ~SPI_CR1_SSI;
-		/* Disable other interfaces */
-		_NutComm_UART_Disable();
-		_NutComm_I2C_Disable();
-		_NutComm_CAN_Disable();
 		/* Poll for header */
 		for (i = 0; i < 8;) {
 			retstatus = HAL_SPI_Receive(&NUT_SPI, rx_header + i, 1, 100);
@@ -554,32 +524,4 @@ void Nut_IO_3(uint8_t set) {
 
 void Nut_IO_USER(uint8_t set) {
 	HAL_GPIO_WritePin(NUT_IO_USER_PORT, NUT_IO_USER_PIN, set ? GPIO_PIN_SET : GPIO_PIN_RESET);
-}
-
-/* Stop CLK of peripheral */
-inline void _NutComm_UART_Disable() {
-	__HAL_RCC_USART1_CLK_DISABLE();
-}
-inline void _NutComm_SPI_Disable() {
-	__HAL_RCC_SPI1_CLK_DISABLE();
-}
-inline void _NutComm_I2C_Disable() {
-	__HAL_RCC_I2C1_CLK_DISABLE();
-}
-inline void _NutComm_CAN_Disable() {
-	__HAL_RCC_CAN1_CLK_DISABLE();
-}
-
-/* Resume CLK of peripheral */
-inline void _NutComm_UART_Enable() {
-	__HAL_RCC_USART1_CLK_ENABLE();
-}
-inline void _NutComm_SPI_Enable() {
-	__HAL_RCC_SPI1_CLK_ENABLE();
-}
-inline void _NutComm_I2C_Enable() {
-	__HAL_RCC_I2C1_CLK_ENABLE();
-}
-inline void _NutComm_CAN_Enable() {
-	__HAL_RCC_CAN1_CLK_ENABLE();
 }

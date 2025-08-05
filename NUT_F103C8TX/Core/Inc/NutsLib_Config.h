@@ -20,7 +20,7 @@
 #define		NUT_LED_PIN			GPIO_PIN_9
 
 #define		NUT_IO_USER_PORT	GPIOB
-#define		NUT_IO_USER_PIN		GPIO_PIN_0
+#define		NUT_IO_USER_PIN		GPIO_PIN_8
 
 #define		NUT_IO1_PORT		GPIOB
 #define		NUT_IO1_PIN			GPIO_PIN_0
