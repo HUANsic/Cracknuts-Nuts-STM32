@@ -11,7 +11,7 @@
 #include "stm32l4xx_hal.h"
 
 /*  DEVICE DEPENDENT SETTINGS  */
-// L476RG - 128K RAM total
+// F439VG - 128K RAM total
 #define		NUT_BUFFER_SIZE		20000	// 20K to be safe
 
 /*  PIN DEFINITIONS  */

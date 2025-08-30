@@ -6,16 +6,20 @@
 mbedtls_aes_context aes_ctx;
 mbedtls_des_context des_ctx;
 #define KEY_LENGTH 128
-#ifdef __STM32F4xx_HAL_CRYP_H
+#ifdef HAL_CRYP_MODULE_ENABLED
 extern CRYP_HandleTypeDef hcryp;
-__ALIGN_BEGIN static uint32_t pKeyCRYP[4] __ALIGN_END = { 0x00000000, 0x00000000, 0x00000000, 0x00000000 };
+typedef union {
+	uint8_t uc[KEY_LENGTH / 8];
+	uint32_t ul[KEY_LENGTH / 32];
+} uBuffer;
+__ALIGN_BEGIN static uBuffer pKeyCRYP __ALIGN_END = { .ul = {0x00000000, 0x00000000, 0x00000000, 0x00000000} };
 #endif
 
 void User_Init() {
 	mbedtls_aes_init(&aes_ctx);
 	mbedtls_des_init(&des_ctx);
-#ifdef __STM32F4xx_HAL_CRYP_H
-	hcryp.Init.pKey = pKeyCRYP;
+#ifdef HAL_CRYP_MODULE_ENABLED
+	hcryp.Init.pKey = (void*)pKeyCRYP.ul;
 #endif
 }
 
@@ -123,27 +127,19 @@ NutStatus_e DES_Encrypt(uint8_t *received_data_ptr, uint32_t received_data_lengt
 	return NUT_OK;
 }
 
-#ifdef __STM32F4xx_HAL_CRYP_H
+#ifdef HAL_CRYP_MODULE_ENABLED
 
 NutStatus_e HWAES_SetEncryptionKey(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
 		uint32_t result_buffer_MAX_size) {
 	*result_length = 0;
-	uint32_t tmp32;
 	uint8_t i;
 	HAL_Delay(5);
 	if (received_data_length != KEY_LENGTH / 8) {
 		*result_length = 0;
 		return NUT_ERROR;
 	}
-	for (i = 0; i < KEY_LENGTH / 32; i++) {
-		tmp32 = received_data_ptr[i * 4 + 0];
-		tmp32 <<= 8;
-		tmp32 |= received_data_ptr[i * 4 + 1];
-		tmp32 <<= 8;
-		tmp32 |= received_data_ptr[i * 4 + 2];
-		tmp32 <<= 8;
-		tmp32 |= received_data_ptr[i * 4 + 3];
-		pKeyCRYP[i] = tmp32;
+	for (i = 0; i < KEY_LENGTH / 8; i++) {
+		pKeyCRYP.uc[i] = received_data_ptr[i];
 	}
 	return NUT_OK;
 }
@@ -160,10 +156,7 @@ NutStatus_e HWAES_Encrypt(uint8_t *received_data_ptr, uint32_t received_data_len
 		uint32_t result_buffer_MAX_size) {
 	*result_length = 16;
 	uint8_t i;
-	union Buffer {
-		uint8_t uc[KEY_LENGTH / 8];
-		uint32_t ul[KEY_LENGTH / 32];
-	} in, out;
+	uBuffer in, out;
 
 	for (i = 0; i < KEY_LENGTH / 8; i++) {
 		in.uc[i] = received_data_ptr[i];
@@ -174,7 +167,11 @@ NutStatus_e HWAES_Encrypt(uint8_t *received_data_ptr, uint32_t received_data_len
 	Nut_LED(1);
 	Nut_IO_USER(1);
 	Nut_IO_1(1);
+#if defined (CRYP)
 	HAL_StatusTypeDef status = HAL_CRYP_Encrypt(&hcryp, in.ul, received_data_length, out.ul, 10); // Size is in hcryp.Init.DataWidthUnit, CRYP_DATAWIDTHUNIT_BYTE in this case
+#else
+	HAL_StatusTypeDef status = HAL_CRYP_AESECB_Encrypt(&hcryp, in.uc, received_data_length, out.uc, 10);
+#endif
 	Nut_IO_1(0);
 	Nut_IO_USER(0);
 	Nut_LED(0);
@@ -196,10 +193,7 @@ NutStatus_e HWAES_Decrypt(uint8_t *received_data_ptr, uint32_t received_data_len
 	*result_length = received_data_length;
 	*result_length = 16;
 	uint8_t i;
-	union Buffer {
-		uint8_t uc[KEY_LENGTH / 8];
-		uint32_t ul[KEY_LENGTH / 32];
-	} in, out;
+	uBuffer in, out;
 
 	for (i = 0; i < KEY_LENGTH / 8; i++) {
 		in.uc[i] = received_data_ptr[i];
@@ -210,7 +204,11 @@ NutStatus_e HWAES_Decrypt(uint8_t *received_data_ptr, uint32_t received_data_len
 	Nut_LED(1);
 	Nut_IO_USER(1);
 	Nut_IO_1(1);
+#if defined (CRYP)
 	HAL_StatusTypeDef status = HAL_CRYP_Decrypt(&hcryp, in.ul, received_data_length, out.ul, 10); // Size is in hcryp.Init.DataWidthUnit, CRYP_DATAWIDTHUNIT_BYTE in this case
+#else
+	HAL_StatusTypeDef status = HAL_CRYP_AESECB_Decrypt(&hcryp, in.uc, received_data_length, out.uc, 10);
+#endif
 	Nut_IO_1(0);
 	Nut_IO_USER(0);
 	Nut_LED(0);
@@ -227,7 +225,7 @@ NutStatus_e HWAES_Decrypt(uint8_t *received_data_ptr, uint32_t received_data_len
 	}
 }
 
-#endif  // defined __STM32F4xx_HAL_CRYP_H
+#endif  // defined HAL_CRYP_MODULE_ENABLED
 
 uint32_t rambuff_u32[256];
 uint16_t *rambuff_u16 = (uint16_t*) rambuff_u32;
@@ -319,13 +317,13 @@ uint16_t cmd_list[] = {
 		0x0202,
 		0x0203,
 
-#ifdef __STM32F4xx_HAL_CRYP_H
+#ifdef HAL_CRYP_MODULE_ENABLED
 		// hardware AES
 		0x0300,
 		0x0301,
 		0x0302,
 		0x0303,
-#endif  // defined __STM32F4xx_HAL_CRYP_H
+#endif  // defined HAL_CRYP_MODULE_ENABLED
 
 		// SPA
 		0x0800,
@@ -351,13 +349,13 @@ NutStatus_e (*cmd_prog_list[])(uint8_t *received_data_ptr, uint32_t received_dat
 		DES_Encrypt,
 		0,
 
-#ifdef __STM32F4xx_HAL_CRYP_H
+#ifdef HAL_CRYP_MODULE_ENABLED
 		// hardware AES
 		HWAES_SetEncryptionKey,
 		HWAES_SetEncryptionKey,
 		HWAES_Encrypt,
 		HWAES_Decrypt,
-#endif  // defined __STM32F4xx_HAL_CRYP_H
+#endif  // defined HAL_CRYP_MODULE_ENABLED
 
 		// SPA
 		SPA_UpdateData,
