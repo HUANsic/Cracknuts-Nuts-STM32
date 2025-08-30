@@ -171,18 +171,13 @@ void Nut_Loop() {
 	uint32_t i;
 
 	/* Check UART */
-#ifdef STM32L4xx_HAL_H
-	if (NUT_UART.Instance->ISR & UART_FLAG_RXNE) {
+	if(__HAL_UART_GET_FLAG(&NUT_UART, UART_FLAG_RXNE)) {
 		/* Record the first byte of header */
-		rx_header[0] = (uint8_t) NUT_UART.Instance->RDR;
-#else
-	if (NUT_UART.Instance->SR & UART_FLAG_RXNE) {
-		/* Record the first byte of header */
-		rx_header[0] = (uint8_t) NUT_UART.Instance->DR;
-#endif
+		HAL_UART_Receive(&NUT_UART, rx_header, 1, 10);
+
 		/* Finish receiving the header */
 		for (i = 1; i < 8;) {
-			retstatus = HAL_UART_Receive(&NUT_UART, rx_header + i, 1, 100);
+			retstatus = HAL_UART_Receive(&NUT_UART, rx_header + i, 1, 10);
 			if (retstatus == HAL_OK) {
 				i++;
 			}
@@ -207,7 +202,7 @@ void Nut_Loop() {
 		if (status == NUT_ERROR) {
 			/* Wait until the other side to finish transmission */
 			for (i = 0; i < length;) {
-				retstatus = HAL_UART_Receive(&NUT_UART, rx_buffer, 1, 100);
+				retstatus = HAL_UART_Receive(&NUT_UART, rx_buffer, 1, 10);
 				if (retstatus == HAL_OK) {
 					i++;
 				}
@@ -231,13 +226,13 @@ void Nut_Loop() {
 			tx_header[3] = 0;
 			tx_header[4] = 0;
 			tx_header[5] = 0;
-			HAL_UART_Transmit(&NUT_UART, tx_header, 6, 100);	// no need to check whether it is successful
+			HAL_UART_Transmit(&NUT_UART, tx_header, 6, 10);	// no need to check whether it is successful
 			_NutComm_UART_Quit();
 			return;
 		}
 		/* Receive the payload */
 		for (i = 0; i < length;) {
-			retstatus = HAL_UART_Receive(&NUT_UART, rx_buffer + i, 1, 100);
+			retstatus = HAL_UART_Receive(&NUT_UART, rx_buffer + i, 1, 10);
 			if (retstatus == HAL_OK) {
 				i++;
 			}
@@ -265,7 +260,7 @@ void Nut_Loop() {
 				tx_header[3] = 0;
 				tx_header[4] = 0;
 				tx_header[5] = 0;
-				HAL_UART_Transmit(&NUT_UART, tx_header, 6, 100);	// no need to check whether it is successful
+				HAL_UART_Transmit(&NUT_UART, tx_header, 6, 10);	// no need to check whether it is successful
 				_NutComm_UART_Quit();
 				return;
 			} else {
@@ -282,10 +277,10 @@ void Nut_Loop() {
 				tx_header[4] = 0x0FF & (response_length >> 8);
 				tx_header[5] = 0x0FF & (response_length);
 				/* Send the header */
-				HAL_UART_Transmit(&NUT_UART, tx_header, 6, 100);
+				HAL_UART_Transmit(&NUT_UART, tx_header, 6, 10);
 				/* Then send the payload */
 				for (i = 0; i < response_length;) {
-					retstatus = HAL_UART_Transmit(&NUT_UART, tx_buffer + i, 1, 100);
+					retstatus = HAL_UART_Transmit(&NUT_UART, tx_buffer + i, 1, 10);
 					if (retstatus == HAL_OK) {
 						i++;
 					}
@@ -314,14 +309,13 @@ void Nut_Loop() {
 			tx_header[3] = 0;
 			tx_header[4] = 0;
 			tx_header[5] = 0;
-			HAL_UART_Transmit(&NUT_UART, tx_header, 6, 100);	// no need to check whether it is successful
+			HAL_UART_Transmit(&NUT_UART, tx_header, 6, 10);	// no need to check whether it is successful
 			_NutComm_UART_Quit();
 			return;
 		}
 	}
 
 	/* Check SPI */
-	//	else if (0) {
 	else if (HAL_GPIO_ReadPin(NUT_SPI_CS_PORT, NUT_SPI_CS_PIN) == GPIO_PIN_RESET) {
 		/* Clear Internal SS */
 		NUT_SPI.Instance->CR1 &= ~SPI_CR1_SSI;

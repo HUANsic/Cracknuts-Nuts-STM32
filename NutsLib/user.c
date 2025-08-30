@@ -5,11 +5,18 @@
 
 mbedtls_aes_context aes_ctx;
 mbedtls_des_context des_ctx;
-int key_length = 128;
+#define KEY_LENGTH 128
+#ifdef __STM32F4xx_HAL_CRYP_H
+extern CRYP_HandleTypeDef hcryp;
+__ALIGN_BEGIN static uint32_t pKeyCRYP[4] __ALIGN_END = { 0x00000000, 0x00000000, 0x00000000, 0x00000000 };
+#endif
 
 void User_Init() {
 	mbedtls_aes_init(&aes_ctx);
 	mbedtls_des_init(&des_ctx);
+#ifdef __STM32F4xx_HAL_CRYP_H
+	hcryp.Init.pKey = pKeyCRYP;
+#endif
 }
 
 /*		Command Function Template
@@ -41,7 +48,7 @@ NutStatus_e Echo(uint8_t *received_data_ptr, uint32_t received_data_length, uint
 NutStatus_e AES_SetEncryptionKey(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
 		uint32_t result_buffer_MAX_size) {
 	*result_length = 0;
-	if (mbedtls_aes_setkey_enc(&aes_ctx, received_data_ptr, key_length))
+	if (mbedtls_aes_setkey_enc(&aes_ctx, received_data_ptr, KEY_LENGTH))
 		return NUT_ERROR;
 	return NUT_OK;
 }
@@ -49,7 +56,7 @@ NutStatus_e AES_SetEncryptionKey(uint8_t *received_data_ptr, uint32_t received_d
 NutStatus_e AES_SetDecryptionKey(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
 		uint32_t result_buffer_MAX_size) {
 	*result_length = 0;
-	if (mbedtls_aes_setkey_dec(&aes_ctx, received_data_ptr, key_length))
+	if (mbedtls_aes_setkey_dec(&aes_ctx, received_data_ptr, KEY_LENGTH))
 		return NUT_ERROR;
 	return NUT_OK;
 }
@@ -61,13 +68,16 @@ NutStatus_e AES_Encrypt(uint8_t *received_data_ptr, uint32_t received_data_lengt
 	Nut_LED(1);
 	Nut_IO_USER(1);
 	Nut_IO_1(1);
-	if (mbedtls_aes_crypt_ecb(&aes_ctx, MBEDTLS_AES_ENCRYPT, received_data_ptr, result_buffer_ptr))
-		return NUT_ERROR;
+	int status = mbedtls_aes_crypt_ecb(&aes_ctx, MBEDTLS_AES_ENCRYPT, received_data_ptr, result_buffer_ptr);
 	Nut_IO_1(0);
 	Nut_IO_USER(0);
 	Nut_LED(0);
 	Nut_Unquiet();
-	return NUT_OK;
+	if (status == 0) {
+		return NUT_OK;
+	} else {
+		return NUT_ERROR;
+	}
 }
 
 NutStatus_e AES_Decrypt(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
@@ -77,13 +87,16 @@ NutStatus_e AES_Decrypt(uint8_t *received_data_ptr, uint32_t received_data_lengt
 	Nut_LED(1);
 	Nut_IO_USER(1);
 	Nut_IO_1(1);
-	if (mbedtls_aes_crypt_ecb(&aes_ctx, MBEDTLS_AES_DECRYPT, received_data_ptr, result_buffer_ptr))
-		return NUT_ERROR;
+	int status = mbedtls_aes_crypt_ecb(&aes_ctx, MBEDTLS_AES_DECRYPT, received_data_ptr, result_buffer_ptr);
 	Nut_IO_1(0);
 	Nut_IO_USER(0);
 	Nut_LED(0);
 	Nut_Unquiet();
-	return NUT_OK;
+	if (status == 0) {
+		return NUT_OK;
+	} else {
+		return NUT_ERROR;
+	}
 }
 
 NutStatus_e DES_SetEncryptionKey(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
@@ -109,6 +122,112 @@ NutStatus_e DES_Encrypt(uint8_t *received_data_ptr, uint32_t received_data_lengt
 		return NUT_ERROR;
 	return NUT_OK;
 }
+
+#ifdef __STM32F4xx_HAL_CRYP_H
+
+NutStatus_e HWAES_SetEncryptionKey(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
+		uint32_t result_buffer_MAX_size) {
+	*result_length = 0;
+	uint32_t tmp32;
+	uint8_t i;
+	HAL_Delay(5);
+	if (received_data_length != KEY_LENGTH / 8) {
+		*result_length = 0;
+		return NUT_ERROR;
+	}
+	for (i = 0; i < KEY_LENGTH / 32; i++) {
+		tmp32 = received_data_ptr[i * 4 + 0];
+		tmp32 <<= 8;
+		tmp32 |= received_data_ptr[i * 4 + 1];
+		tmp32 <<= 8;
+		tmp32 |= received_data_ptr[i * 4 + 2];
+		tmp32 <<= 8;
+		tmp32 |= received_data_ptr[i * 4 + 3];
+		pKeyCRYP[i] = tmp32;
+	}
+	return NUT_OK;
+}
+
+NutStatus_e HWAES_SetDecryptionKey(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
+		uint32_t result_buffer_MAX_size) {
+	*result_length = received_data_length;
+	// TODO HW AES Decryption Key Set
+	HAL_Delay(5);
+	return NUT_ERROR;
+}
+
+NutStatus_e HWAES_Encrypt(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
+		uint32_t result_buffer_MAX_size) {
+	*result_length = 16;
+	uint8_t i;
+	union Buffer {
+		uint8_t uc[KEY_LENGTH / 8];
+		uint32_t ul[KEY_LENGTH / 32];
+	} in, out;
+
+	for (i = 0; i < KEY_LENGTH / 8; i++) {
+		in.uc[i] = received_data_ptr[i];
+	}
+
+	HAL_Delay(5);
+	Nut_Quiet();
+	Nut_LED(1);
+	Nut_IO_USER(1);
+	Nut_IO_1(1);
+	HAL_StatusTypeDef status = HAL_CRYP_Encrypt(&hcryp, in.ul, received_data_length, out.ul, 10); // Size is in hcryp.Init.DataWidthUnit, CRYP_DATAWIDTHUNIT_BYTE in this case
+	Nut_IO_1(0);
+	Nut_IO_USER(0);
+	Nut_LED(0);
+	Nut_Unquiet();
+
+	for (i = 0; i < KEY_LENGTH / 8; i++) {
+		result_buffer_ptr[i] = out.uc[i];
+	}
+
+	if (status == HAL_OK) {
+		return NUT_OK;
+	} else {
+		return NUT_ERROR;
+	}
+}
+
+NutStatus_e HWAES_Decrypt(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
+		uint32_t result_buffer_MAX_size) {
+	*result_length = received_data_length;
+	*result_length = 16;
+	uint8_t i;
+	union Buffer {
+		uint8_t uc[KEY_LENGTH / 8];
+		uint32_t ul[KEY_LENGTH / 32];
+	} in, out;
+
+	for (i = 0; i < KEY_LENGTH / 8; i++) {
+		in.uc[i] = received_data_ptr[i];
+	}
+
+	HAL_Delay(5);
+	Nut_Quiet();
+	Nut_LED(1);
+	Nut_IO_USER(1);
+	Nut_IO_1(1);
+	HAL_StatusTypeDef status = HAL_CRYP_Decrypt(&hcryp, in.ul, received_data_length, out.ul, 10); // Size is in hcryp.Init.DataWidthUnit, CRYP_DATAWIDTHUNIT_BYTE in this case
+	Nut_IO_1(0);
+	Nut_IO_USER(0);
+	Nut_LED(0);
+	Nut_Unquiet();
+
+	for (i = 0; i < KEY_LENGTH / 8; i++) {
+		result_buffer_ptr[i] = out.uc[i];
+	}
+
+	if (status == HAL_OK) {
+		return NUT_OK;
+	} else {
+		return NUT_ERROR;
+	}
+}
+
+#endif  // defined __STM32F4xx_HAL_CRYP_H
 
 uint32_t rambuff_u32[256];
 uint16_t *rambuff_u16 = (uint16_t*) rambuff_u32;
@@ -182,21 +301,68 @@ NutStatus_e SPA_ConditionJump(uint8_t *received_data_ptr, uint32_t received_data
 }
 
 /* User command */
-uint16_t cmd_list[] = { 0x0001, 0x0100, 0x0101, 0x0102, 0x0103, 0x0200, 0x0201, 0x0202, 0x0203, 0x0800, 0x0801, 0x0802, 0 };
+// @formatter:off
+
+uint16_t cmd_list[] = {
+		// echo
+		0x0001,
+
+		// software AES
+		0x0100,
+		0x0101,
+		0x0102,
+		0x0103,
+
+		// software DES
+		0x0200,
+		0x0201,
+		0x0202,
+		0x0203,
+
+#ifdef __STM32F4xx_HAL_CRYP_H
+		// hardware AES
+		0x0300,
+		0x0301,
+		0x0302,
+		0x0303,
+#endif  // defined __STM32F4xx_HAL_CRYP_H
+
+		// SPA
+		0x0800,
+		0x0801,
+		0x0802,
+
+0 };	// must end with 0
 
 /* User command program, returns result length */
-NutStatus_e (*cmd_prog_list[])(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
-		uint32_t result_buffer_MAX_size) = {
-			Echo,
-			AES_SetEncryptionKey,
-			AES_SetDecryptionKey,
-			AES_Encrypt,
-			AES_Decrypt,
-			DES_SetEncryptionKey,
-			DES_SetDecryptionKey,
-			DES_Encrypt,
-			0,
-			SPA_UpdateData,
-			SPA_ArithmeticCompute,
-			SPA_ConditionJump
+NutStatus_e (*cmd_prog_list[])(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length, uint32_t result_buffer_MAX_size) = {
+		// echo
+		Echo,
+
+		// software AES
+		AES_SetEncryptionKey,
+		AES_SetDecryptionKey,
+		AES_Encrypt,
+		AES_Decrypt,
+
+		// software DES
+		DES_SetEncryptionKey,
+		DES_SetDecryptionKey,
+		DES_Encrypt,
+		0,
+
+#ifdef __STM32F4xx_HAL_CRYP_H
+		// hardware AES
+		HWAES_SetEncryptionKey,
+		HWAES_SetEncryptionKey,
+		HWAES_Encrypt,
+		HWAES_Decrypt,
+#endif  // defined __STM32F4xx_HAL_CRYP_H
+
+		// SPA
+		SPA_UpdateData,
+		SPA_ArithmeticCompute,
+		SPA_ConditionJump
 };
+
+// @formatter:on
