@@ -164,17 +164,17 @@ NutStatus_e HWAES_Encrypt(uint8_t *received_data_ptr, uint32_t received_data_len
 
 	HAL_Delay(5);
 	Nut_Quiet();
-	Nut_LED(1);
-	Nut_IO_USER(1);
-	Nut_IO_1(1);
+//	Nut_LED(1);
+//	Nut_IO_USER(1);
+//	Nut_IO_1(1);
 #if defined (CRYP)
 	HAL_StatusTypeDef status = HAL_CRYP_Encrypt(&hcryp, in.ul, received_data_length, out.ul, 10); // Size is in hcryp.Init.DataWidthUnit, CRYP_DATAWIDTHUNIT_BYTE in this case
 #else
 	HAL_StatusTypeDef status = HAL_CRYP_AESECB_Encrypt(&hcryp, in.uc, received_data_length, out.uc, 10);
 #endif
-	Nut_IO_1(0);
-	Nut_IO_USER(0);
-	Nut_LED(0);
+//	Nut_IO_1(0);
+//	Nut_IO_USER(0);
+//	Nut_LED(0);
 	Nut_Unquiet();
 
 	for (i = 0; i < KEY_LENGTH / 8; i++) {
@@ -205,9 +205,9 @@ NutStatus_e HWAES_Decrypt(uint8_t *received_data_ptr, uint32_t received_data_len
 	Nut_IO_USER(1);
 	Nut_IO_1(1);
 #if defined (CRYP)
-	HAL_StatusTypeDef status = HAL_CRYP_Decrypt(&hcryp, in.ul, received_data_length, out.ul, 10); // Size is in hcryp.Init.DataWidthUnit, CRYP_DATAWIDTHUNIT_BYTE in this case
+	HAL_StatusTypeDef status = HAL_CRYP_Decrypt(&hcryp, in.ul, received_data_length, out.ul, 100); // Size is in hcryp.Init.DataWidthUnit, CRYP_DATAWIDTHUNIT_BYTE in this case
 #else
-	HAL_StatusTypeDef status = HAL_CRYP_AESECB_Decrypt(&hcryp, in.uc, received_data_length, out.uc, 10);
+	HAL_StatusTypeDef status = HAL_CRYP_AESECB_Decrypt(&hcryp, in.uc, received_data_length, out.uc, 100);
 #endif
 	Nut_IO_1(0);
 	Nut_IO_USER(0);

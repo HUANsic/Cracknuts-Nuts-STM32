@@ -102,6 +102,7 @@ void _NutComm_UART_Quit() {
 //	HAL_UART_Abort(&NUT_UART);
 //	NUT_UART.RxState = HAL_UART_STATE_READY;
 //	NUT_UART.gState = HAL_UART_STATE_READY;
+//	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 }
 void _NutComm_SPI_Quit() {
 	/* Wait until CSn releases */
@@ -171,13 +172,18 @@ void Nut_Loop() {
 	uint32_t i;
 
 	/* Check UART */
+	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 	if(__HAL_UART_GET_FLAG(&NUT_UART, UART_FLAG_RXNE)) {
+		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 		/* Record the first byte of header */
-		HAL_UART_Receive(&NUT_UART, rx_header, 1, 10);
+		HAL_UART_Receive(&NUT_UART, rx_header, 1, 100000);
+		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 
 		/* Finish receiving the header */
 		for (i = 1; i < 8;) {
-			retstatus = HAL_UART_Receive(&NUT_UART, rx_header + i, 1, 10);
+			  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
+			retstatus = HAL_UART_Receive(&NUT_UART, rx_header + i, 1, 100000);
+			  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 			if (retstatus == HAL_OK) {
 				i++;
 			}
@@ -202,7 +208,7 @@ void Nut_Loop() {
 		if (status == NUT_ERROR) {
 			/* Wait until the other side to finish transmission */
 			for (i = 0; i < length;) {
-				retstatus = HAL_UART_Receive(&NUT_UART, rx_buffer, 1, 10);
+				retstatus = HAL_UART_Receive(&NUT_UART, rx_buffer, 1, 100000);
 				if (retstatus == HAL_OK) {
 					i++;
 				}
@@ -226,13 +232,13 @@ void Nut_Loop() {
 			tx_header[3] = 0;
 			tx_header[4] = 0;
 			tx_header[5] = 0;
-			HAL_UART_Transmit(&NUT_UART, tx_header, 6, 10);	// no need to check whether it is successful
+			HAL_UART_Transmit(&NUT_UART, tx_header, 6, 1000);	// no need to check whether it is successful
 			_NutComm_UART_Quit();
 			return;
 		}
 		/* Receive the payload */
 		for (i = 0; i < length;) {
-			retstatus = HAL_UART_Receive(&NUT_UART, rx_buffer + i, 1, 10);
+			retstatus = HAL_UART_Receive(&NUT_UART, rx_buffer + i, 1, 100000);
 			if (retstatus == HAL_OK) {
 				i++;
 			}
@@ -260,7 +266,7 @@ void Nut_Loop() {
 				tx_header[3] = 0;
 				tx_header[4] = 0;
 				tx_header[5] = 0;
-				HAL_UART_Transmit(&NUT_UART, tx_header, 6, 10);	// no need to check whether it is successful
+				HAL_UART_Transmit(&NUT_UART, tx_header, 6, 1000);	// no need to check whether it is successful
 				_NutComm_UART_Quit();
 				return;
 			} else {
@@ -277,10 +283,10 @@ void Nut_Loop() {
 				tx_header[4] = 0x0FF & (response_length >> 8);
 				tx_header[5] = 0x0FF & (response_length);
 				/* Send the header */
-				HAL_UART_Transmit(&NUT_UART, tx_header, 6, 10);
+				HAL_UART_Transmit(&NUT_UART, tx_header, 6, 1000);
 				/* Then send the payload */
 				for (i = 0; i < response_length;) {
-					retstatus = HAL_UART_Transmit(&NUT_UART, tx_buffer + i, 1, 10);
+					retstatus = HAL_UART_Transmit(&NUT_UART, tx_buffer + i, 1, 1000);
 					if (retstatus == HAL_OK) {
 						i++;
 					}
@@ -309,7 +315,7 @@ void Nut_Loop() {
 			tx_header[3] = 0;
 			tx_header[4] = 0;
 			tx_header[5] = 0;
-			HAL_UART_Transmit(&NUT_UART, tx_header, 6, 10);	// no need to check whether it is successful
+			HAL_UART_Transmit(&NUT_UART, tx_header, 6, 1000);	// no need to check whether it is successful
 			_NutComm_UART_Quit();
 			return;
 		}
@@ -485,8 +491,10 @@ void Nut_Loop() {
 void Nut_Init() {
 	_NutComm_Init();
 	Nut_LED(1);
+	Nut_IO_2(1);
 	HAL_Delay(200);
 	User_Init();
+	Nut_IO_2(0);
 	Nut_LED(0);
 }
 
