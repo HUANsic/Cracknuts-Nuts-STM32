@@ -485,12 +485,7 @@ void Nut_Loop() {
 
 void Nut_Init() {
 	_NutComm_Init();
-	Nut_LED(1);
-	Nut_IO_2(1);
-	HAL_Delay(200);
 	User_Init();
-	Nut_IO_2(0);
-	Nut_LED(0);
 }
 
 void Nut_Quiet() {

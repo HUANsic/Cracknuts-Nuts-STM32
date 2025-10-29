@@ -16,11 +16,16 @@ __ALIGN_BEGIN static uBuffer pKeyCRYP __ALIGN_END = { .ul = {0x00000000, 0x00000
 #endif
 
 void User_Init() {
+	Nut_LED(1);
+	Nut_IO_2(1);
+	HAL_Delay(200);
 	mbedtls_aes_init(&aes_ctx);
 	mbedtls_des_init(&des_ctx);
 #ifdef HAL_CRYP_MODULE_ENABLED
 	hcryp.Init.pKey = (void*)pKeyCRYP.ul;
 #endif
+	Nut_IO_2(0);
+	Nut_LED(0);
 }
 
 /*		Command Function Template
