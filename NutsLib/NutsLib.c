@@ -172,18 +172,13 @@ void Nut_Loop() {
 	uint32_t i;
 
 	/* Check UART */
-	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 	if(__HAL_UART_GET_FLAG(&NUT_UART, UART_FLAG_RXNE)) {
-		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 		/* Record the first byte of header */
 		HAL_UART_Receive(&NUT_UART, rx_header, 1, 100000);
-		  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 
 		/* Finish receiving the header */
 		for (i = 1; i < 8;) {
-			  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_SET);
 			retstatus = HAL_UART_Receive(&NUT_UART, rx_header + i, 1, 100000);
-			  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_7, GPIO_PIN_RESET);
 			if (retstatus == HAL_OK) {
 				i++;
 			}
