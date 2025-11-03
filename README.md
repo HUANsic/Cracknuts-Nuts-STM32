@@ -37,8 +37,8 @@ NutsLib 模块旨在为Nuts（被测芯片）与 Cracker（测试设备）提供
 
 # Chapter 2 功能描述
 
-
 ![](figure/nutslib-structure-stm32.png)
+
 
 用户在STM32配置文件（.ioc）中分配引脚及外设后，需要在NutsLib_Config.h中进行定义。
 
