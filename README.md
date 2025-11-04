@@ -1,9 +1,5 @@
 # NutsLib Reference Manual
 
-
-
-
-
 # Chapter 1 概览
 
 ## 介绍
@@ -43,33 +39,64 @@ NutsLib 模块旨在为Nuts（被测芯片）与 Cracker（测试设备）提供
 用户在STM32配置文件（.ioc）中分配引脚及外设后，需要在NutsLib_Config.h中进行定义。
 
 
-# Chapter 3 如何使用
+# Chapter 3 使用方法
 
 
 
-## 项目建立过程
+## 项目导入过程
 
 以F103为例
 
 1. 克隆github仓库
-2. CubeSTM32导入工程
+
+git clone git@github.com:HUANsic/Cracknuts-Nuts-STM32.git
+
+git clone https://github.com/HUANsic/Cracknuts-Nuts-STM32.git
+
+
+2. STM32CubeIDE导入工程
+
+
+菜单栏-文件-导入（或在空白处右键选择导入）：
+
+![](figure/import-page.png)
+
+
+选择整个文件夹：
+
+![](figure/select-folder.png)
+
+
+点击导入：
+
+![](figure/import-project.png)
+
+
 3. 编译
+
+
+
 4. 下载
 
 
 
-WorkSpace说明，F103、L476、F407、F439、共享目录之间关系，举例说明个性和共性
+## 新建项目过程
 
+
+WorkSpace说明，F103、L476、F407、F439、共享目录之间关系，举例说明个性和共性
 
 
 ## 通信协议
 
 
 
-通信协议说明，CMD+Payload，status+payload
+通信内容包括指令（Command）或状态（Status），以及载荷（Payload）。
 
-命令解析执行流程，给出流程图
+主机（Cracker）发送的格式为指令+载荷（CMD+PLD），从机（Nut）发送的格式为状态+载荷（STA+PLD）。
 
+从机接收的逻辑如下：
+
+![](figure/nutslib-decode-flow-stm32.png)
 
 
 ## mbedtls介绍
