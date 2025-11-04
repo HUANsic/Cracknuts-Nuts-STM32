@@ -49,9 +49,9 @@ NutsLib 模块旨在为Nuts（被测芯片）与 Cracker（测试设备）提供
 
 1. 克隆github仓库
 
-git clone git@github.com:HUANsic/Cracknuts-Nuts-STM32.git
-
-git clone https://github.com/HUANsic/Cracknuts-Nuts-STM32.git
+```git clone git@github.com:HUANsic/Cracknuts-Nuts-STM32.git```
+或者
+```git clone https://github.com/HUANsic/Cracknuts-Nuts-STM32.git```
 
 
 2. STM32CubeIDE导入工程
