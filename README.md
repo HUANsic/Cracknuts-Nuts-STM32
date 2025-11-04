@@ -33,7 +33,7 @@ NutsLib 模块旨在为Nuts（被测芯片）与 Cracker（测试设备）提供
 
 # Chapter 2 功能描述
 
-![](figure/nutslib-structure-stm32.png)
+![](.figure/nutslib-structure-stm32.png)
 
 
 用户在STM32配置文件（.ioc）中分配引脚及外设后，需要在NutsLib_Config.h中进行定义。
@@ -59,17 +59,17 @@ NutsLib 模块旨在为Nuts（被测芯片）与 Cracker（测试设备）提供
 
 菜单栏-文件-导入（或在空白处右键选择导入）-已有项目导入到工作区：
 
-![](figure/import-page.png)
+![](.figure/import-page.png)
 
 
 选择整个文件夹：
 
-![](figure/select-folder.png)
+![](.figure/select-folder.png)
 
 
 点击导入：
 
-![](figure/import-project.png)
+![](.figure/import-project.png)
 
 
 3. 编译
@@ -96,7 +96,7 @@ WorkSpace说明，F103、L476、F407、F439、共享目录之间关系，举例�
 
 从机接收的逻辑如下：
 
-![](figure/nutslib-decode-flow-stm32.png)
+![](.figure/nutslib-decode-flow-stm32.png)
 
 
 ## mbedtls介绍
