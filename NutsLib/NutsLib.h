@@ -26,6 +26,12 @@ typedef enum {
 	NUT_ERROR_CMD_UNKNOWN
 } NutError_e;
 
+typedef struct {
+	uint16_t command;
+	uint16_t reserved;
+	NutStatus_e (*function)(uint8_t *, uint32_t, uint8_t *, uint32_t *, uint32_t);
+} NutAction_t;
+
 void Nut_Init(void);
 
 void Nut_Loop(void);

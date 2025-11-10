@@ -14,6 +14,7 @@ language.settings.xml
 */CCL_Reports/*
 # */makefile # include this if it appears outside /TriCore Debug/
 */Debug/*
-# ignore all folders/files starting with test and temp
+# ignore all folders/files starting with test and temp and .local
 test*
 temp*
+.local*

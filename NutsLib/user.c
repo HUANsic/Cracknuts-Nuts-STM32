@@ -257,7 +257,7 @@ NutStatus_e SPA_UpdateData(uint8_t *received_data_ptr, uint32_t received_data_le
 	// trigger
 	Nut_Quiet();
 	Nut_LED(1);
-	Nut_IO_USER(1);
+//	Nut_IO_USER(1);
 	Nut_IO_1(1);
 	if (data_size == 8) {
 		// spa_update_data_u8
@@ -279,7 +279,7 @@ NutStatus_e SPA_UpdateData(uint8_t *received_data_ptr, uint32_t received_data_le
 	}
 	// clear trigger
 	Nut_IO_1(0);
-	Nut_IO_USER(0);
+//	Nut_IO_USER(0);
 	Nut_LED(0);
 	Nut_Unquiet();
 
@@ -305,67 +305,27 @@ NutStatus_e SPA_ConditionJump(uint8_t *received_data_ptr, uint32_t received_data
 
 /* User command */
 // @formatter:off
-
-uint16_t cmd_list[] = {
-		// echo
-		0x0001,
-
-		// software AES
-		0x0100,
-		0x0101,
-		0x0102,
-		0x0103,
-
-		// software DES
-		0x0200,
-		0x0201,
-		0x0202,
-		0x0203,
-
+NutAction_t command_list[] = {
+		{.command=0x0001, .function=Echo},
+		{.command=0x0100, .function=AES_SetEncryptionKey},
+		{.command=0x0101, .function=AES_SetDecryptionKey},
+		{.command=0x0102, .function=AES_Encrypt},
+		{.command=0x0103, .function=AES_Decrypt},
+		{.command=0x0200, .function=DES_SetEncryptionKey},
+		{.command=0x0201, .function=DES_SetDecryptionKey},
+		{.command=0x0202, .function=DES_Encrypt},
+		{.command=0x0203, .function=0},
 #ifdef HAL_CRYP_MODULE_ENABLED
 		// hardware AES
-		0x0300,
-		0x0301,
-		0x0302,
-		0x0303,
+		{.command=0x0300, .function=HWAES_SetEncryptionKey},
+		{.command=0x0301, .function=HWAES_SetEncryptionKey},
+		{.command=0x0302, .function=HWAES_Encrypt},
+		{.command=0x0303, .function=HWAES_Decrypt},
 #endif  // defined HAL_CRYP_MODULE_ENABLED
-
 		// SPA
-		0x0800,
-		0x0801,
-		0x0802,
-
-0 };	// must end with 0
-
-/* User command program, returns result length */
-NutStatus_e (*cmd_prog_list[])(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length, uint32_t result_buffer_MAX_size) = {
-		// echo
-		Echo,
-
-		// software AES
-		AES_SetEncryptionKey,
-		AES_SetDecryptionKey,
-		AES_Encrypt,
-		AES_Decrypt,
-
-		// software DES
-		DES_SetEncryptionKey,
-		DES_SetDecryptionKey,
-		DES_Encrypt,
-		0,
-
-#ifdef HAL_CRYP_MODULE_ENABLED
-		// hardware AES
-		HWAES_SetEncryptionKey,
-		HWAES_SetEncryptionKey,
-		HWAES_Encrypt,
-		HWAES_Decrypt,
-#endif  // defined HAL_CRYP_MODULE_ENABLED
-
-		// SPA
-		SPA_UpdateData,
-		SPA_ArithmeticCompute,
-		SPA_ConditionJump
+		{.command=0x0800, .function=SPA_UpdateData},
+		{.command=0x0801, .function=SPA_ArithmeticCompute},
+		{.command=0x0802, .function=SPA_ConditionJump},
 };
-
 // @formatter:on
+uint16_t command_count = sizeof(command_list) / sizeof(command_list[0]);

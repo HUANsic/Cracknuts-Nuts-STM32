@@ -19,6 +19,8 @@ extern uint16_t cmd_list[];
 /* Command program, returns result status */
 extern NutStatus_e (*cmd_prog_list[])(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
 		uint32_t result_buffer_MAX_size);
+extern NutAction_t command_list[];
+extern uint16_t command_count;
 
 /* Command program to be executed */
 NutStatus_e (*cmd_program)(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
@@ -44,7 +46,7 @@ uint8_t received_any_count = 0;
 /* Decode header */
 uint32_t _NutComm_DecodeHeader() {
 	uint32_t length;
-	uint8_t i;
+	uint16_t i;
 	uint16_t command;
 	/* Decode the header */
 	command = rx_header[0];
@@ -59,14 +61,11 @@ uint32_t _NutComm_DecodeHeader() {
 	length |= rx_header[7];
 	/* Parse command */
 	cmd_program = 0;
-
-	for (i = 0; i < 255; i++) {		// just scan all TODO need to fix this
-		if (cmd_program)
+	for (i = 0; i < command_count; i++) {
+		if (command_list[i].command == command) {
+			cmd_program = command_list[i].function;	// set the program
 			break;
-		if (cmd_list[i] == command)
-			cmd_program = cmd_prog_list[i];	// set the program
-		if (cmd_list[i] == 0)
-			break;
+		}
 	}
 	/* If the command is not found, then continue to receive the payload if possible */
 	if (!cmd_program) {
