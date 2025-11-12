@@ -1,6 +1,7 @@
 #ifndef RSA_H_
 #define RSA_H_
 
+#include <stdint.h>
 
 // ����ֵ����
 #define RE_DATA 0x0401
@@ -10,10 +11,10 @@ typedef unsigned int u32;
 typedef unsigned short u16;
 typedef unsigned char u8;
 typedef u64		uint64_t;
-typedef u32		uint32_t;
+//typedef u32		uint32_t;
 typedef u16		uint16_t;
 typedef u8		uint8_t;
-typedef int 	int32_t;
+//typedef int 	int32_t;
 typedef uint32_t NN_DIGIT;
 typedef uint16_t NN_HALF_DIGIT;
 /* RSA key lengths.
@@ -69,8 +70,8 @@ typedef struct    // ˽Կ�ṹ
 } R_RSA_PRIVATE_KEY;
 
 
-int  rsa_public(void *outbuf, int *outlen, const void *inbuf, int inlen, const R_RSA_PUBLIC_KEY *pubkey);
-int  rsa_private(void *outbuf, int *outlen, const void *inbuf, int inlen, const R_RSA_PRIVATE_KEY *prikey);
+int32_t  rsa_public(void *outbuf, int32_t *outlen, const void *inbuf, int32_t inlen, const R_RSA_PUBLIC_KEY *pubkey);
+int32_t  rsa_private(void *outbuf, int32_t *outlen, const void *inbuf, int32_t inlen, const R_RSA_PRIVATE_KEY *prikey);
 
 #endif
 

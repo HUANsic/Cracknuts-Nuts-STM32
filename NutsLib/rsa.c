@@ -3,8 +3,8 @@
 
 
 /****************************************************************************
-  º¯ÊýÃû     :  void dmult(uint32_t a, uint32_t b, uint32_t *cHigh, uint32_t *cLow)
-  ÃèÊö       :  32Î»ÕûÊý³Ë·¨ÔËËã
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½     :  void dmult(uint32_t a, uint32_t b, uint32_t *cHigh, uint32_t *cLow)
+  ï¿½ï¿½ï¿½ï¿½       :  32Î»ï¿½ï¿½ï¿½ï¿½ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ï¿½
 ****************************************************************************/
 void dmult(uint32_t a, uint32_t b, uint32_t *cHigh, uint32_t *cLow)
 {
@@ -20,14 +20,14 @@ void dmult(uint32_t a, uint32_t b, uint32_t *cHigh, uint32_t *cLow)
 }
 
 /****************************************************************************
-  º¯ÊýÃû     :
-  ÃèÊö       :
-  ÊäÈë²ÎÊý   :
-  Êä³ö²ÎÊý   :
-  ·µ»ØÖµ     :
-  ÐÞ¸ÄÀúÊ·   :
-      ÐÞ¸ÄÈË     ÐÞ¸ÄÊ±¼ä    ÐÞ¸Ä°æ±¾ºÅ   ÐÞ¸ÄÔ­Òò
-  1¡¢
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½     :
+  ï¿½ï¿½ï¿½ï¿½       :
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½   :
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½   :
+  ï¿½ï¿½ï¿½ï¿½Öµ     :
+  ï¿½Þ¸ï¿½ï¿½ï¿½Ê·   :
+      ï¿½Þ¸ï¿½ï¿½ï¿½     ï¿½Þ¸ï¿½Ê±ï¿½ï¿½    ï¿½Þ¸Ä°æ±¾ï¿½ï¿½   ï¿½Þ¸ï¿½Ô­ï¿½ï¿½
+  1ï¿½ï¿½
 ****************************************************************************/
 NN_DIGIT subdigitmult(NN_DIGIT *a, NN_DIGIT *b, NN_DIGIT c, NN_DIGIT *d, NN_DIGIT digits)
 {
@@ -345,7 +345,7 @@ void NN_Div (NN_DIGIT *a, NN_DIGIT *b, NN_DIGIT *c, uint32_t cDigits, NN_DIGIT *
 	NN_DIGIT ai;
 	int32_t i;
 	uint32_t ddDigits, shift;
-	NN_DIGIT div_cc[2*MAX_NN_DIGITS+1], div_dd[MAX_NN_DIGITS]; // ³ý·¨ÔËËãÖÐ¼ä±äÁ¿
+	NN_DIGIT div_cc[2*MAX_NN_DIGITS+1], div_dd[MAX_NN_DIGITS]; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½
 
 	NN_DIGIT s;
 	NN_DIGIT t[2], u, v, *ccptr;
@@ -467,7 +467,7 @@ void NN_Div (NN_DIGIT *a, NN_DIGIT *b, NN_DIGIT *c, uint32_t cDigits, NN_DIGIT *
  */
 void NN_Mod (NN_DIGIT *a, NN_DIGIT *b, uint32_t bDigits, NN_DIGIT *c, uint32_t cDigits)
 {
-	NN_DIGIT mod_t[2 * MAX_NN_DIGITS];    // Ä£ÔËËãÖÐ¼ä±äÁ¿
+	NN_DIGIT mod_t[2 * MAX_NN_DIGITS];    // Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½
 
 	NN_Div (mod_t, a, b, bDigits, c, cDigits);
 
@@ -483,7 +483,7 @@ void NN_Mod (NN_DIGIT *a, NN_DIGIT *b, uint32_t bDigits, NN_DIGIT *c, uint32_t c
  */
 void NN_ModMult (NN_DIGIT *a, NN_DIGIT *b, NN_DIGIT *c, NN_DIGIT *d, uint32_t digits)
 {
-	NN_DIGIT mod_t[2 * MAX_NN_DIGITS];    // Ä£ÔËËãÖÐ¼ä±äÁ¿
+	NN_DIGIT mod_t[2 * MAX_NN_DIGITS];    // Ä£ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½
 
 	NN_Mult (mod_t, b, c, digits);
 
@@ -505,7 +505,7 @@ void NN_ModExp (NN_DIGIT *a, NN_DIGIT *b, NN_DIGIT *c, uint32_t cDigits, NN_DIGI
 	int32_t i;
 	uint32_t ciBits, j, s;
 	NN_DIGIT ci;
-	NN_DIGIT bPower[3][MAX_NN_DIGITS], Exp_t[MAX_NN_DIGITS];   // Ö¸ÊýÔËËãÖÐ¼ä±äÁ¿
+	NN_DIGIT bPower[3][MAX_NN_DIGITS], Exp_t[MAX_NN_DIGITS];   // Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½
 
 	/* Store b, b^2 mod d, and b^3 mod d.
 	*/
@@ -524,7 +524,7 @@ void NN_ModExp (NN_DIGIT *a, NN_DIGIT *b, NN_DIGIT *c, uint32_t cDigits, NN_DIGI
 
 		/* Scan past leading zero bits of most significant digit.
 		*/
-		if (i == (int)(cDigits - 1))
+		if (i == (int32_t)(cDigits - 1))
 		{
 			while (! DIGIT_2MSB (ci))
 			{
@@ -551,10 +551,10 @@ void NN_ModExp (NN_DIGIT *a, NN_DIGIT *b, NN_DIGIT *c, uint32_t cDigits, NN_DIGI
 	memset ((uint8_t *)bPower, 0, sizeof (bPower));
 	memset ((uint8_t *)Exp_t, 0, sizeof (Exp_t));
 }
-NN_DIGIT pc[MAX_NN_DIGITS];           // ¹«Ô¿ÔËËãºóÊä³öÊý¾Ý
-	NN_DIGIT pe[MAX_NN_DIGITS];           // ¹«Ô¿Ö¸Êý
-	NN_DIGIT pm[MAX_NN_DIGITS];           // ÊäÈëÊý¾Ý
-	NN_DIGIT pn[MAX_NN_DIGITS];           // ¹«Ô¿Ä£
+NN_DIGIT pc[MAX_NN_DIGITS];           // ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	NN_DIGIT pe[MAX_NN_DIGITS];           // ï¿½ï¿½Ô¿Ö¸ï¿½ï¿½
+	NN_DIGIT pm[MAX_NN_DIGITS];           // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	NN_DIGIT pn[MAX_NN_DIGITS];           // ï¿½ï¿½Ô¿Ä£
 static int32_t RSAPublicBlock (uint8_t *output,                  /* output block */
 							    uint32_t *outputLen,              /* length of output block */
 							    uint8_t *input,                   /* input block */
@@ -564,8 +564,8 @@ static int32_t RSAPublicBlock (uint8_t *output,                  /* output block
 	uint32_t eDigits, nDigits;
 	
 
-	// ÐÞ¸ÄÄ¿µÄ:ÎªÁËÊÊÓ¦²»Í¬Ä£³¤µÄRSA¹«Ë½Ô¿¶Ô£¬¼´¹«Ë½Ô¿¶Ô
-	// ÔÚÊ¹ÓÃÇ°²»ÐèÒªÊÂÏÈÀ©³äµ½256×Ö½Ú¡£
+	// ï¿½Þ¸ï¿½Ä¿ï¿½ï¿½:Îªï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Í¬Ä£ï¿½ï¿½ï¿½ï¿½RSAï¿½ï¿½Ë½Ô¿ï¿½Ô£ï¿½ï¿½ï¿½ï¿½ï¿½Ë½Ô¿ï¿½ï¿½
+	// ï¿½ï¿½Ê¹ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½äµ½256ï¿½Ö½Ú¡ï¿½
 	NN_Decode (pm, MAX_NN_DIGITS, input, inputLen);
 	//NN_Decode (pn, MAX_NN_DIGITS, publicKey->modulus, MAX_RSA_MODULUS_LEN);
 	NN_Decode (pn, MAX_NN_DIGITS, publicKey->modulus, publicKey->bits/8);
@@ -604,23 +604,23 @@ static int32_t RSAPrivateBlock (uint8_t *output,            /* output block */
 							     R_RSA_PRIVATE_KEY *privateKey)     /* RSA private key */
 {
 	uint32_t cDigits, nDigits, pDigits, OutLen;
-	NN_DIGIT c[MAX_NN_DIGITS];            // Ë½Ô¿ÔËËãÁÙÊ±ÊäÈëÔËËã»º³åÇø
-	NN_DIGIT cP[MAX_NN_DIGITS];           // cÄ£p·ÖÁ¿½á¹û
-	NN_DIGIT cQ[MAX_NN_DIGITS];           // cÄ£q·ÖÁ¿½á¹û
-	NN_DIGIT dP[MAX_NN_DIGITS];           // Ë½Ô¿Ö¸Êýp·ÖÁ¿
-	NN_DIGIT dQ[MAX_NN_DIGITS];           // Ë½Ô¿Ö¸Êýq·ÖÁ¿
+	NN_DIGIT c[MAX_NN_DIGITS];            // Ë½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ã»ºï¿½ï¿½ï¿½ï¿½
+	NN_DIGIT cP[MAX_NN_DIGITS];           // cÄ£pï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	NN_DIGIT cQ[MAX_NN_DIGITS];           // cÄ£qï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	NN_DIGIT dP[MAX_NN_DIGITS];           // Ë½Ô¿Ö¸ï¿½ï¿½pï¿½ï¿½ï¿½ï¿½
+	NN_DIGIT dQ[MAX_NN_DIGITS];           // Ë½Ô¿Ö¸ï¿½ï¿½qï¿½ï¿½ï¿½ï¿½
 	NN_DIGIT mP[MAX_NN_DIGITS];           // mP = cP^dP mod p
 	NN_DIGIT mQ[MAX_NN_DIGITS];           // mQ = cQ^dQ mod q
 	NN_DIGIT n[MAX_NN_DIGITS];            // Ë½Ô¿Ä£
-	NN_DIGIT p[MAX_NN_DIGITS];            // Ë½Ô¿p·ÖÁ¿
-	NN_DIGIT q[MAX_NN_DIGITS];            // Ë½Ô¿q·ÖÁ¿
-	NN_DIGIT qInv[MAX_NN_DIGITS];         // Ë½Ô¿pºÍqµÄÏà¹Ø·ÖÁ¿
-	NN_DIGIT t[MAX_NN_DIGITS];            // Ë½Ô¿ÔËËãºóÊä³öÊý¾Ý
+	NN_DIGIT p[MAX_NN_DIGITS];            // Ë½Ô¿pï¿½ï¿½ï¿½ï¿½
+	NN_DIGIT q[MAX_NN_DIGITS];            // Ë½Ô¿qï¿½ï¿½ï¿½ï¿½
+	NN_DIGIT qInv[MAX_NN_DIGITS];         // Ë½Ô¿pï¿½ï¿½qï¿½ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½
+	NN_DIGIT t[MAX_NN_DIGITS];            // Ë½Ô¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 	NN_Decode (c, MAX_NN_DIGITS, input, inputLen);
 
-	// ÐÞ¸ÄÄ¿µÄ:ÎªÁËÊÊÓ¦²»Í¬Ä£³¤µÄRSA¹«Ë½Ô¿¶Ô£¬¼´¹«Ë½Ô¿¶Ô
-	// ÔÚÊ¹ÓÃÇ°²»ÐèÒªÊÂÏÈÀ©³äµ½256×Ö½Ú¡£
+	// ï¿½Þ¸ï¿½Ä¿ï¿½ï¿½:Îªï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½Í¬Ä£ï¿½ï¿½ï¿½ï¿½RSAï¿½ï¿½Ë½Ô¿ï¿½Ô£ï¿½ï¿½ï¿½ï¿½ï¿½Ë½Ô¿ï¿½ï¿½
+	// ï¿½ï¿½Ê¹ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½äµ½256ï¿½Ö½Ú¡ï¿½
 	/*NN_Decode(n, MAX_NN_DIGITS, privateKey->modulus, MAX_RSA_MODULUS_LEN);
 	NN_Decode(p, MAX_NN_DIGITS, privateKey->prime[0], MAX_RSA_PRIME_LEN);
 	NN_Decode(q, MAX_NN_DIGITS, privateKey->prime[1], MAX_RSA_PRIME_LEN);
@@ -693,11 +693,11 @@ static int32_t RSAPrivateBlock (uint8_t *output,            /* output block */
 }
 
 
-int  rsa_public(void *outbuf, int *outlen, const void *inbuf, int inlen, const R_RSA_PUBLIC_KEY *pubkey)
+int32_t  rsa_public(void *outbuf, int32_t *outlen, const void *inbuf, int32_t inlen, const R_RSA_PUBLIC_KEY *pubkey)
 {
-	int status;
+	int32_t status;
 	uint32_t modulusLen, pkcsBlockLen=0;
-	uint8_t pkcsBlock[MAX_RSA_MODULUS_LEN]; // ¹«Ô¿²Ù×÷Ê±ÓÃ×öÁÙÊ±Êä³ö»º³åÇø
+	uint8_t pkcsBlock[MAX_RSA_MODULUS_LEN]; // ï¿½ï¿½Ô¿ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
     if((outbuf == NULL) || (pubkey == NULL)) {
         return(-1);
@@ -732,11 +732,11 @@ int  rsa_public(void *outbuf, int *outlen, const void *inbuf, int inlen, const R
 }
 
 
-int  rsa_private(void *outbuf, int *outlen, const void *inbuf, int inlen, const R_RSA_PRIVATE_KEY *prikey)
+int32_t  rsa_private(void *outbuf, int32_t *outlen, const void *inbuf, int32_t inlen, const R_RSA_PRIVATE_KEY *prikey)
 {
-	int status;
+	int32_t status;
 	uint32_t i, modulusLen;
-	uint8_t pkcsBlock[MAX_RSA_MODULUS_LEN]; // Ë½Ô¿²Ù×÷Ê±ÓÃ×öÁÙÊ±ÊäÈë»º³åÇø
+	uint8_t pkcsBlock[MAX_RSA_MODULUS_LEN]; // Ë½Ô¿ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ë»ºï¿½ï¿½ï¿½ï¿½
 
     if((inbuf == NULL) || (prikey == NULL)){
         return(-1);
