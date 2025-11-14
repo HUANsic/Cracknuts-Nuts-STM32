@@ -171,7 +171,7 @@ void Nut_Loop() {
 	uint32_t i;
 
 	/* Check UART */
-	if(__HAL_UART_GET_FLAG(&NUT_UART, UART_FLAG_RXNE)) {
+	if (__HAL_UART_GET_FLAG(&NUT_UART, UART_FLAG_RXNE)) {
 		/* Record the first byte of header */
 		HAL_UART_Receive(&NUT_UART, rx_header, 1, 100000);
 
@@ -513,6 +513,14 @@ void Nut_IO_3(uint8_t set) {
 	HAL_GPIO_WritePin(NUT_IO3_PORT, NUT_IO3_PIN, set ? GPIO_PIN_SET : GPIO_PIN_RESET);
 }
 
-void Nut_IO_USER(uint8_t set) {
-	HAL_GPIO_WritePin(NUT_IO_USER_PORT, NUT_IO_USER_PIN, set ? GPIO_PIN_SET : GPIO_PIN_RESET);
+void Nut_Trigger_Set(void) {
+	Nut_IO_1(1);
+}
+
+void Nut_Trigger_Clear(void) {
+	Nut_IO_1(0);
+}
+
+uint8_t Nut_IO_USER() {
+	return HAL_GPIO_ReadPin(NUT_IO_USER_PORT, NUT_IO_USER_PIN);
 }
