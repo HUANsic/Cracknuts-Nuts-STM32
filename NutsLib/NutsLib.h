@@ -42,15 +42,16 @@ void Nut_Unquiet(void);
 
 void Nut_LED(uint8_t on);
 
-#define Nut_Trigger_Set() Nut_IO_1(1)
-#define Nut_Trigger_Clear() Nut_IO_1(0)
-
 void Nut_IO_1(uint8_t set);
 
 void Nut_IO_2(uint8_t set);
 
 void Nut_IO_3(uint8_t set);
 
-void Nut_IO_USER(uint8_t set);
+void Nut_Trigger_Set(void);
+
+void Nut_Trigger_Clear(void);
+
+uint8_t Nut_IO_USER(void);
 
 #endif /* INC_NUTSLIB_H_ */
