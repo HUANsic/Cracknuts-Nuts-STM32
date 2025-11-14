@@ -277,7 +277,6 @@ NutStatus_e RSA_SetPrivateKey(uint8_t *received_data_ptr, uint32_t received_data
 NutStatus_e RSA_Encrypt(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
 		uint32_t result_buffer_MAX_size) {
 	int32_t textLength, cipherLength;
-	int32_t ret;
 
 	// debug: turn on LED
 	Nut_LED(1);
