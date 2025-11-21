@@ -1,14 +1,6 @@
 #include "user.h"
 #include "aes.h"
 
-void User_Init() {
-	Nut_LED(1);
-	HAL_Delay(200);
-	mbedtls_aes_init(&aes_ctx);
-	mbedtls_des_init(&des_ctx);
-	Nut_LED(0);
-}
-
 /*		Command Function Template
  *
 
@@ -106,3 +98,11 @@ NutAction_t command_list[] = {
 };
 // @formatter:on
 uint16_t command_count = sizeof(command_list) / sizeof(command_list[0]);
+
+void User_Init() {
+	Nut_LED(1);
+	HAL_Delay(200);
+	mbedtls_aes_init(&aes_ctx);
+	mbedtls_des_init(&des_ctx);
+	Nut_LED(0);
+}
