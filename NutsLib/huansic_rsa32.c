@@ -7,6 +7,9 @@
 
 #include "huansic_rsa32.h"
 
+// debug
+#include "NutsLib.h"
+
 uint32_t rsa_wheel_ModAdd(uint32_t a, uint32_t b, uint32_t modulus) {
 	uint32_t result = 0;
 	a %= modulus;
@@ -74,6 +77,46 @@ uint32_t rsa_wheel_ModExp(uint32_t base, uint32_t exponent, uint32_t modulus) {
 	 */
 	// check every single bit for demonstration; exit when i underflows
 	for (i = 0; i < 32; i++) {
+		Nut_Trigger_Set();
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		__asm__("nop");
+		Nut_Trigger_Clear();
 		if (exponent & (1 << i)) {	// if exponent bit is not 0
 			// add base from this round
 			result = rsa_wheel_ModMult(result, base, modulus);
