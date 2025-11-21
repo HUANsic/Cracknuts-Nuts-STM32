@@ -15,10 +15,6 @@ extern SPI_HandleTypeDef NUT_SPI;
 extern UART_HandleTypeDef NUT_UART;
 
 /* Command */
-extern uint16_t cmd_list[];
-/* Command program, returns result status */
-extern NutStatus_e (*cmd_prog_list[])(uint8_t *received_data_ptr, uint32_t received_data_length, uint8_t *result_buffer_ptr, uint32_t *result_length,
-		uint32_t result_buffer_MAX_size);
 extern NutAction_t command_list[];
 extern uint16_t command_count;
 
