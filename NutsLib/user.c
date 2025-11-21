@@ -1,11 +1,5 @@
 #include "user.h"
 
-void User_Init() {
-	Nut_LED(1);
-	HAL_Delay(200);
-	Nut_LED(0);
-}
-
 /*		Command Function Template
  *
 
@@ -505,3 +499,9 @@ NutAction_t command_list[] = {
 };
 // @formatter:on
 uint16_t command_count = sizeof(command_list) / sizeof(command_list[0]);
+
+void User_Init() {
+	Nut_LED(1);
+	HAL_Delay(200);
+	Nut_LED(0);
+}
