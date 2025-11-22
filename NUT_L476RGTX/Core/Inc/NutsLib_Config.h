@@ -12,7 +12,7 @@
 
 /*  DEVICE DEPENDENT SETTINGS  */
 // L476RG - 128K RAM total
-#define		NUT_BUFFER_SIZE		20000	// 20K to be safe
+#define		NUT_BUFFER_SIZE		512
 
 /*  PIN DEFINITIONS  */
 
