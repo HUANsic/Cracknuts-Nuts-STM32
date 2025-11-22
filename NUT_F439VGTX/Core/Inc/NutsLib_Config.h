@@ -11,8 +11,8 @@
 #include "stm32f4xx_hal.h"
 
 /*  DEVICE DEPENDENT SETTINGS  */
-// F439VG - 112K(RAM1)+64K(RAM2)+16K(RAM3)+64K(CCM)=256K RAM total, but use only 112K(RAM1) for buffer
-#define		NUT_BUFFER_SIZE		20000	// 20K to be safe
+// F439VG - 112K(RAM1)+64K(RAM2)+16K(RAM3)+64K(CCM)=256K RAM total
+#define		NUT_BUFFER_SIZE		512
 
 /*  PIN DEFINITIONS  */
 
